@@ -107,7 +107,10 @@ class DownloadDialog(
 
 	private fun pickDestination(): File? {
 		val fileChooser = JFileChooser()
-		fileChooser.fileFilter = FileNameExtensionFilter("Comics archive", "cbz")
+		fileChooser.addChoosableFileFilter(
+			FileNameExtensionFilter(messages.getString("comic_zip_archive"), "cbz")
+		)
+		fileChooser.isAcceptAllFileFilterUsed = false
 		fileChooser.selectedFile = File(manga.title.toFileNameSafe() + ".cbz")
 		val selection = fileChooser.showSaveDialog(this)
 		return if (selection == JFileChooser.APPROVE_OPTION) fileChooser.selectedFile else null

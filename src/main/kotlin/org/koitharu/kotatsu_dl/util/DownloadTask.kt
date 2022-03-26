@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.parsers.newParser
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu_dl.env.Constants
 import org.koitharu.kotatsu_dl.env.MangaLoaderContextImpl
+import org.koitharu.kotatsu_dl.writers.MangaWriter
 import java.awt.Image
 import java.io.File
 import javax.imageio.ImageIO
@@ -19,30 +20,30 @@ import kotlin.math.roundToInt
 
 private const val MAX_DOWNLOAD_ATTEMPTS = 3
 private const val DOWNLOAD_ERROR_DELAY = 500L
-private const val DOWNLOADS_DIR = "cache"
 
 class DownloadTask(
 	private val manga: Manga,
 	private val chaptersIds: Set<Long>?,
+	private val writer: MangaWriter,
 	private val destination: File,
 ) {
 
 	private val okHttp = MangaLoaderContextImpl.httpClient
 	private val coverWidth = 200
 	private val coverHeight = (coverWidth * Constants.COVER_ASPECT_RATIO).roundToInt()
-	private val root = File(DOWNLOADS_DIR)
+	private val root = File(File(System.getProperty("user.home"), ".cache"), "kotatsu-dl")
 	val startId = System.currentTimeMillis()
 	private val tempFile = File(root, "$startId.tmp")
 
 	init {
-		root.mkdir()
+		root.mkdirs()
 	}
 
 	operator fun invoke() = flow {
 		semaphore.acquire()
 		emit(State.Preparing(manga, null, startId))
 		var cover: Image? = null
-		var output: MangaZip? = null
+		var output: MangaOutput? = null
 		try {
 			val repo = manga.source.newParser(MangaLoaderContextImpl)
 			cover = runCatching {
@@ -55,7 +56,7 @@ class DownloadTask(
 			}.getOrNull()
 			emit(State.Preparing(manga, cover, startId))
 			val data = if (manga.chapters == null) repo.getDetails(manga) else manga
-			output = MangaZip(destination)
+			output = MangaOutput(destination, writer, root)
 			output.prepare(data)
 			val coverUrl = data.largeCoverUrl ?: data.coverUrl
 			downloadFile(coverUrl, data.publicUrl).let { file ->
@@ -98,9 +99,7 @@ class DownloadTask(
 				}
 			}
 			emit(State.PostProcessing(manga, cover, startId))
-			if (!output.compress()) {
-				throw RuntimeException("Cannot create target file")
-			}
+			output.compress()
 			emit(State.Done(manga, cover, startId, destination))
 		} catch (_: CancellationException) {
 			emit(State.Cancelled(manga, cover, startId))

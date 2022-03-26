@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu_dl.util.DownloadTask
+import org.koitharu.kotatsu_dl.writers.MangaWriter
 import java.io.File
 
 class DownloadsCoordinator(parentScope: CoroutineScope) {
@@ -20,7 +21,7 @@ class DownloadsCoordinator(parentScope: CoroutineScope) {
 		chaptersIds: Set<Long>?,
 		destination: File,
 	) {
-		val newTask = DownloadTask(manga, chaptersIds, destination)
+		val newTask = DownloadTask(manga, chaptersIds, MangaWriter(destination.extension), destination)
 		val job = Job()
 		val stateFlow = newTask().stateIn(
 			scope = scope + job,
