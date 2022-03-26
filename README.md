@@ -2,7 +2,7 @@
 
 Cross-platform desktop application to download manga from various services
 
-![AUR version](https://img.shields.io/aur/version/kotatsu-dl-git) ![License](https://img.shields.io/github/license/nv95/Kotatsu) [![Discord](https://img.shields.io/discord/898363402467045416?color=5865f2&label=discord)](https://discord.gg/NNJ5RgVBC5)
+[![AUR version](https://img.shields.io/aur/version/kotatsu-dl-git)](https://aur.archlinux.org/packages/kotatsu-dl-git) [![License](https://img.shields.io/github/license/nv95/Kotatsu)](https://github.com/nv95/kotatsu-dl/blob/master/LICENSE) [![Discord](https://img.shields.io/discord/898363402467045416?color=5865f2&label=discord)](https://discord.gg/NNJ5RgVBC5)
 
 ![Screenshot](metadata/scr1.png)
 
