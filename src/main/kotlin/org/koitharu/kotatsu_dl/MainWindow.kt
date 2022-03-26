@@ -14,6 +14,7 @@ import org.koitharu.kotatsu_dl.model.MangaCellRenderer
 import org.koitharu.kotatsu_dl.model.MangaSourceComboBoxModel
 import org.koitharu.kotatsu_dl.model.MangaSourceRenderer
 import org.koitharu.kotatsu_dl.model.PagedListModel
+import org.koitharu.kotatsu_dl.setings.SettingsDialog
 import org.koitharu.kotatsu_dl.util.CliArguments
 import org.koitharu.kotatsu_dl.util.DoubleClickListener
 import org.koitharu.kotatsu_dl.util.getResIcon

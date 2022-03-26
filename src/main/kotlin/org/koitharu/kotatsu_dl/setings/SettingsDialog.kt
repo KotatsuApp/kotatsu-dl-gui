@@ -1,16 +1,27 @@
-package org.koitharu.kotatsu_dl
+package org.koitharu.kotatsu_dl.setings
 
-import org.koitharu.kotatsu_dl.env.Settings
 import java.awt.BorderLayout
+import java.awt.Component
 import java.awt.Dimension
 import java.awt.Frame
 import java.util.*
 import javax.swing.*
+import javax.swing.UIManager.LookAndFeelInfo
 
 class SettingsDialog(owner: Frame?) : JDialog(owner) {
 
 	private val messages = ResourceBundle.getBundle("messages")
 	private val settings = Settings.getInstance()
+	private val comboBoxTheme = JComboBox<LookAndFeelInfo>().apply {
+		val lookAndFeels = UIManager.getInstalledLookAndFeels()
+		model = DefaultComboBoxModel(lookAndFeels)
+		renderer = LookAndFillInfoRenderer()
+		val currentTheme = UIManager.getLookAndFeel().javaClass.canonicalName
+		selectedIndex = lookAndFeels.indexOfFirst {
+			it.className == currentTheme
+		}
+		alignmentX = Component.LEFT_ALIGNMENT
+	}
 
 	init {
 		title = messages.getString("settings")
@@ -44,12 +55,23 @@ class SettingsDialog(owner: Frame?) : JDialog(owner) {
 	private fun createContentPanel() = JPanel().apply {
 		layout = BoxLayout(this, BoxLayout.PAGE_AXIS)
 		border = BorderFactory.createEmptyBorder(10, 10, 10, 10)
-		val labelStub = JLabel("Not implemented")
-		labelStub.preferredSize = Dimension(200, 140)
-		add(labelStub)
+		add(JLabel(messages.getString("theme")).apply { alignmentX = Component.LEFT_ALIGNMENT })
+		add(Box.createRigidArea(Dimension(0, 5)))
+		add(comboBoxTheme)
 	}
 
 	private fun saveSettings() {
+		val newTheme = (comboBoxTheme.selectedItem as LookAndFeelInfo).className
+		if (settings.theme != newTheme) {
+			settings.theme = newTheme
+			UIManager.setLookAndFeel(newTheme)
+			JOptionPane.showMessageDialog(
+				this,
+				messages.getString("restart_required"),
+				title,
+				JOptionPane.OK_OPTION or JOptionPane.INFORMATION_MESSAGE,
+			)
+		}
 		settings.flush()
 	}
 }

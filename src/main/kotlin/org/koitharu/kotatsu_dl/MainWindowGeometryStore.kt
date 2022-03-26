@@ -1,6 +1,6 @@
 package org.koitharu.kotatsu_dl
 
-import org.koitharu.kotatsu_dl.env.Settings
+import org.koitharu.kotatsu_dl.setings.Settings
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 

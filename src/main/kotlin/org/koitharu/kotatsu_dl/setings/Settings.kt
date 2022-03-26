@@ -1,10 +1,11 @@
-package org.koitharu.kotatsu_dl.env
+package org.koitharu.kotatsu_dl.setings
 
 import org.koitharu.kotatsu_dl.MainWindow
 import java.awt.Dimension
 import java.awt.Point
 import java.lang.ref.WeakReference
 import java.util.prefs.Preferences
+import javax.swing.UIManager
 
 class Settings private constructor() {
 
@@ -35,6 +36,12 @@ class Settings private constructor() {
 				prefs.remove("main_window.x")
 				prefs.remove("main_window.y")
 			}
+		}
+
+	var theme: String
+		get() = prefs.get("theme", UIManager.getSystemLookAndFeelClassName())
+		set(value) {
+			prefs.put("theme", value)
 		}
 
 	fun flush() {
