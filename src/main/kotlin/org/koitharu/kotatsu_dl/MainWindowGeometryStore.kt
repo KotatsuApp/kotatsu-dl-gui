@@ -17,10 +17,14 @@ class MainWindowGeometryStore : WindowAdapter() {
 	}
 
 	override fun windowClosing(e: WindowEvent) {
-		val settings = Settings.getInstance()
-		val window = e.window
-		settings.mainWindowLocation = window.location
-		settings.mainWindowSize = window.size
-		settings.flush()
+		runCatching {
+			val settings = Settings.getInstance()
+			val window = e.window
+			settings.mainWindowLocation = window.location
+			settings.mainWindowSize = window.size
+			settings.flush()
+		}.onFailure { throwable ->
+			throwable.printStackTrace()
+		}
 	}
 }

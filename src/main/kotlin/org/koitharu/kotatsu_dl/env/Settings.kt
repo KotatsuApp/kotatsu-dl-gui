@@ -1,55 +1,44 @@
 package org.koitharu.kotatsu_dl.env
 
+import org.koitharu.kotatsu_dl.MainWindow
 import java.awt.Dimension
 import java.awt.Point
-import java.io.File
 import java.lang.ref.WeakReference
-import java.util.*
-
-private const val FILENAME = "kotatsu.conf"
+import java.util.prefs.Preferences
 
 class Settings private constructor() {
 
-	private val prop = Properties()
+	private val prefs = Preferences.userNodeForPackage(MainWindow::class.java)
 
 	var mainWindowSize: Dimension
 		get() = Dimension(
-			prop.getProperty("main_window.width")?.toIntOrNull() ?: 740,
-			prop.getProperty("main_window.height")?.toIntOrNull() ?: 460,
+			prefs.getInt("main_window.width", 740),
+			prefs.getInt("main_window.height", 460),
 		)
 		set(value) {
-			prop.setProperty("main_window.width", value.width.toString())
-			prop.setProperty("main_window.height", value.height.toString())
+			prefs.putInt("main_window.width", value.width)
+			prefs.putInt("main_window.height", value.height)
 		}
 
 	var mainWindowLocation: Point?
 		get() {
 			return Point(
-				prop.getProperty("main_window.x")?.toIntOrNull() ?: return null,
-				prop.getProperty("main_window.y")?.toIntOrNull() ?: return null,
-			)
+				prefs.getInt("main_window.x", -1),
+				prefs.getInt("main_window.y", -1),
+			).takeUnless { it.x < 0 || it.y < 0 }
 		}
 		set(value) {
 			if (value != null) {
-				prop.setProperty("main_window.x", value.x.toString())
-				prop.setProperty("main_window.y", value.y.toString())
+				prefs.putInt("main_window.x", value.x)
+				prefs.putInt("main_window.y", value.y)
 			} else {
-				prop.remove("main_window.x")
-				prop.remove("main_window.y")
+				prefs.remove("main_window.x")
+				prefs.remove("main_window.y")
 			}
 		}
 
-	init {
-		val file = File(FILENAME)
-		if (file.exists()) {
-			file.inputStream().use { prop.load(it) }
-		}
-	}
-
 	fun flush() {
-		File(FILENAME).outputStream().use {
-			prop.store(it, null)
-		}
+		prefs.flush()
 	}
 
 	companion object {
