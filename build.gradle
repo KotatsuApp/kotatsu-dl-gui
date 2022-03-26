@@ -1,0 +1,62 @@
+plugins {
+    id 'org.jetbrains.kotlin.jvm' version '1.6.20-RC'
+	id 'application'
+}
+
+group = 'org.koitharu'
+version = '0.1'
+
+repositories {
+    mavenCentral()
+    google()
+    maven {
+        url 'https://jitpack.io'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
+compileKotlin {
+	kotlinOptions {
+		jvmTarget = '11'
+		freeCompilerArgs += [
+				'-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+				'-opt-in=kotlin.ExperimentalStdlibApi',
+		]
+	}
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = '11'
+}
+
+application {
+    mainClassName = 'org.koitharu.kotatsu_dl.MainKt'
+}
+
+jar {
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	manifest {
+		attributes 'Main-Class':'org.koitharu.kotatsu_dl.MainKt'
+	}
+	from {
+		configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+}
+
+
+dependencies {
+    implementation 'com.github.nv95:kotatsu-parsers:e15dbf2a4b'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.0'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'com.squareup.okio:okio:3.0.0'
+    implementation 'org.json:json:20211205'
+    implementation 'io.webfolder:quickjs:1.1.0'
+
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+}

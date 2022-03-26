@@ -1,0 +1,11 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Kotatsu-dl
+Icon=/opt/kotatsu-dl/kotatsu-dl.png
+Exec="java -jar /opt/kotatsu-dl/kotatsu-dl.jar"
+Comment=Manga downloader with a simple gui
+Categories=Internet;
+Terminal=false
+StartupWMClass=org-koitharu-kotatsu_dl-MainKt
+StartupNotify=true
