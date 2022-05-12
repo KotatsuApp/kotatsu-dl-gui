@@ -18,7 +18,9 @@ yay -S kotatsu-dl-git
 
 #### Windows or other Linux distro
 
-Just download an appropriate archive from the [latest release](https://github.com/nv95/kotatsu-dl/releases/latest).  
+Just download an appropriate archive from the [latest release](https://github.com/nv95/kotatsu-dl/releases/latest).
+
+Java 11 or later is required
 
 ### License
 [![GNU GPLv3 Image](https://www.gnu.org/graphics/gplv3-127x51.png)](http://www.gnu.org/licenses/gpl-3.0.en.html)
