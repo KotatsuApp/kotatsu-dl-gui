@@ -1,10 +1,10 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.6.20-RC'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.20'
 	id 'application'
 }
 
 group = 'org.koitharu'
-version = '0.2.2'
+version = '0.2.3'
 
 repositories {
     mavenCentral()
@@ -48,12 +48,12 @@ jar {
 
 
 dependencies {
-    implementation 'com.github.nv95:kotatsu-parsers:05a93e2380'
+    implementation 'com.github.nv95:kotatsu-parsers:8a3b6df91d'
 
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.1'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.2'
 
-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation 'com.squareup.okio:okio:3.1.0'
     implementation 'org.json:json:20220320'
     implementation 'io.webfolder:quickjs:1.1.0'

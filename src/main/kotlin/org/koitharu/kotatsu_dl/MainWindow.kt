@@ -151,7 +151,12 @@ class MainWindow(
 					withContext(Dispatchers.Default) {
 						when {
 							selectedMangaSource != MangaSource.LOCAL -> {
-								selectedMangaSource.newParser(MangaLoaderContextImpl).getList(offset, query, null, null)
+								val parser = selectedMangaSource.newParser(MangaLoaderContextImpl)
+								if (query == null) {
+									parser.getList(offset, emptySet(), null)
+								} else {
+									parser.getList(offset, query)
+								}
 							}
 							offset == 0 -> CompositeSearchHelper(
 								sources = MangaSource.values().filterNot { it == MangaSource.LOCAL },
