@@ -8,11 +8,13 @@ class CookieJarImpl : CookieJar {
 
 	private val cache = HashMap<CookieKey, Cookie>()
 
+	@Synchronized
 	override fun loadForRequest(url: HttpUrl): List<Cookie> {
 		val time = System.currentTimeMillis()
 		return cache.values.filter { it.matches(url) && it.expiresAt >= time }
 	}
 
+	@Synchronized
 	override fun saveFromResponse(url: HttpUrl, cookies: List<Cookie>) {
 		cookies.forEach {
 			val key = CookieKey(url.host, it.name)

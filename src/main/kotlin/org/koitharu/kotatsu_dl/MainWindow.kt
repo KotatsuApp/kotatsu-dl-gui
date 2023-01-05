@@ -42,7 +42,7 @@ class MainWindow(
 		addActionListener { onSourceChanged() }
 	}
 	private val comboBoxSource = JComboBox(MangaSourceComboBoxModel()).apply {
-		renderer = MangaSourceRenderer()
+		renderer = MangaSourceRenderer(windowScope)
 		addActionListener { onSourceChanged() }
 	}
 	private val searchButton = JButton(getResIcon("search.png")).apply {

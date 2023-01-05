@@ -9,6 +9,7 @@ import java.awt.BorderLayout
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.Image
+import javax.imageio.ImageIO
 import javax.swing.*
 
 class MangaCellRenderer(
@@ -17,6 +18,7 @@ class MangaCellRenderer(
 ) : JPanel(), ListCellRenderer<Manga> {
 
 	private val imageCache = HashMap<String, Image>()
+	private val placeholder = ImageIO.read(ClassLoader.getSystemResource("placeholder.png"))
 
 	private val labelTitle = JMultilineLabel()
 	private val labelIcon = JLabel()
@@ -50,17 +52,19 @@ class MangaCellRenderer(
 		labelIcon.preferredSize = Dimension(imageWidth, imageHeight)
 		labelTitle.preferredSize = Dimension(imageWidth, 50)
 
-		labelIcon.icon = null
-		imageCache[manga.coverUrl]?.let {
-			labelIcon.icon = ImageIcon(it)
-		} ?: AsyncImage(scope, manga.coverUrl)
-			.resize(imageWidth, imageHeight)
-			.load {
-				if (it != null) {
-					imageCache[manga.coverUrl] = it
-					list.repaintCell(index)
+		val cover = imageCache[manga.coverUrl]
+		labelIcon.icon = ImageIcon(cover ?: placeholder)
+		if (cover == null) {
+			AsyncImage(scope, manga.coverUrl)
+				.resize(imageWidth, imageHeight)
+				.fallback(placeholder)
+				.load {
+					if (it != null) {
+						imageCache[manga.coverUrl] = it
+						list.repaintCell(index)
+					}
 				}
-			}
+		}
 		labelTitle.text = manga.title
 		return this
 	}
