@@ -34,6 +34,7 @@ class DownloadDialog(
 	}
 	private val buttonCancel = JButton(messages.getString("cancel"))
 	private val buttonOk = JButton(messages.getString("download"))
+	private val buttonAll = JButton(messages.getString("select_all"))
 
 	private lateinit var manga: Manga
 
@@ -41,6 +42,7 @@ class DownloadDialog(
 		contentPane.layout = BorderLayout()
 		buttonCancel.addActionListener { dispose() }
 		buttonOk.addActionListener { onOkClick() }
+		buttonAll.addActionListener { toggleSelection() }
 		comboBoxBranches.addActionListener { showChapters() }
 
 		val listScroller = JScrollPane(
@@ -48,7 +50,7 @@ class DownloadDialog(
 			JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 			JScrollPane.HORIZONTAL_SCROLLBAR_NEVER,
 		)
-		listScroller.preferredSize = Dimension(260, 320)
+		listScroller.preferredSize = Dimension(340, 320)
 		listScroller.alignmentX = LEFT_ALIGNMENT
 		val listPane = JPanel()
 		listPane.layout = BoxLayout(listPane, BoxLayout.PAGE_AXIS)
@@ -65,7 +67,9 @@ class DownloadDialog(
 		val buttonPane = JPanel()
 		buttonPane.layout = BoxLayout(buttonPane, BoxLayout.LINE_AXIS)
 		buttonPane.border = BorderFactory.createEmptyBorder(0, 10, 10, 10)
+		buttonPane.add(buttonAll)
 		buttonPane.add(Box.createHorizontalGlue())
+		buttonPane.add(Box.createRigidArea(Dimension(10, 0)))
 		buttonPane.add(buttonCancel)
 		buttonPane.add(Box.createRigidArea(Dimension(10, 0)))
 		buttonPane.add(buttonOk)
@@ -94,7 +98,7 @@ class DownloadDialog(
 		listChapters.setListData(
 			manga.chapters?.filter {
 				it.branch == selectedBranch
-			}?.toTypedArray().orEmpty()
+			}?.toTypedArray().orEmpty(),
 		)
 	}
 
@@ -105,10 +109,20 @@ class DownloadDialog(
 		dispose()
 	}
 
+	private fun toggleSelection() {
+		val selectionModel = listChapters.selectionModel as MultiSelectionModel
+		val count = listChapters.model.size
+		if (selectionModel.selectedItemsCount == count) {
+			selectionModel.clearSelection()
+		} else {
+			selectionModel.setSelectionInterval(0, count - 1)
+		}
+	}
+
 	private fun pickDestination(): File? {
 		val fileChooser = JFileChooser()
 		fileChooser.addChoosableFileFilter(
-			FileNameExtensionFilter(messages.getString("comic_zip_archive"), "cbz")
+			FileNameExtensionFilter(messages.getString("comic_zip_archive"), "cbz"),
 		)
 		fileChooser.isAcceptAllFileFilterUsed = false
 		fileChooser.selectedFile = File(manga.title.toFileNameSafe() + ".cbz")
