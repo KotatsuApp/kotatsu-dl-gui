@@ -2,14 +2,10 @@ package org.koitharu.kotatsu_dl
 
 import kotlinx.coroutines.*
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.newParser
 import org.koitharu.kotatsu_dl.component.JMultilineLabel
 import org.koitharu.kotatsu_dl.env.Constants
 import org.koitharu.kotatsu_dl.env.CursorController
-import org.koitharu.kotatsu_dl.env.MangaLoaderContextImpl
-import org.koitharu.kotatsu_dl.util.AsyncImage
-import org.koitharu.kotatsu_dl.util.createBoldVariance
-import org.koitharu.kotatsu_dl.util.parentFrame
+import org.koitharu.kotatsu_dl.util.*
 import java.awt.Component
 import java.awt.Dimension
 import java.awt.Rectangle
@@ -96,9 +92,9 @@ class DetailsPanel(
 			coroutineContext[CursorController]?.withBusy {
 				prevJob?.join()
 				progressBar.isVisible = true
-				runCatching {
+				runCatchingCancellable {
 					withContext(Dispatchers.Default) {
-						val parser = manga.source.newParser(MangaLoaderContextImpl)
+						val parser = ParsersFactory.create(manga.source)
 						parser.getDetails(manga)
 					}
 				}.onSuccess {

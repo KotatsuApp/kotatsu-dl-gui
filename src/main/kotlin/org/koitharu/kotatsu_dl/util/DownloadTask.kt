@@ -8,7 +8,6 @@ import okhttp3.Headers
 import okhttp3.Request
 import okio.IOException
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.newParser
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu_dl.env.Constants
 import org.koitharu.kotatsu_dl.env.MangaLoaderContextImpl
@@ -45,8 +44,8 @@ class DownloadTask(
 		var cover: Image? = null
 		var output: MangaOutput? = null
 		try {
-			val repo = manga.source.newParser(MangaLoaderContextImpl)
-			cover = runCatching {
+			val repo = ParsersFactory.create(manga.source)
+			cover = runCatchingCancellable {
 				MangaLoaderContextImpl.httpGet(
 					manga.coverUrl,
 					Headers.headersOf(Constants.HEADER_REFERER, manga.publicUrl),

@@ -7,9 +7,9 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.newParser
 import org.koitharu.kotatsu.parsers.util.levenshteinDistance
-import org.koitharu.kotatsu_dl.env.MangaLoaderContextImpl
+import org.koitharu.kotatsu_dl.util.ParsersFactory
+import org.koitharu.kotatsu_dl.util.runCatchingCancellable
 
 class CompositeSearchHelper(
 	private val sources: List<MangaSource>,
@@ -33,8 +33,8 @@ class CompositeSearchHelper(
 
 	private suspend fun searchImpl(source: MangaSource, query: String): List<Manga> {
 		return semaphore.withPermit {
-			runCatching {
-				source.newParser(MangaLoaderContextImpl).getList(0, query)
+			runCatchingCancellable {
+				ParsersFactory.create(source).getList(0, query)
 			}.onFailure {
 				it.printStackTrace()
 			}.getOrDefault(emptyList())

@@ -3,7 +3,6 @@ package org.koitharu.kotatsu_dl.util
 import kotlinx.coroutines.*
 import okhttp3.Headers
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.newParser
 import org.koitharu.kotatsu_dl.env.Constants
 import org.koitharu.kotatsu_dl.env.MangaLoaderContextImpl
 import java.awt.Image
@@ -42,7 +41,7 @@ class AsyncFavicon(
 	}
 
 	private suspend fun loadImageImpl(): Icon? {
-		val parser = source.newParser(MangaLoaderContextImpl)
+		val parser = ParsersFactory.create(source)
 		val favicons = parser.getFavicons()
 		val size = maxOf(targetHeight, targetWidth)
 		val favicon = favicons.find(if (size < 0) 999 else size) ?: return null

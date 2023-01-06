@@ -7,18 +7,13 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu.parsers.newParser
 import org.koitharu.kotatsu_dl.env.CursorController
-import org.koitharu.kotatsu_dl.env.MangaLoaderContextImpl
 import org.koitharu.kotatsu_dl.model.MangaCellRenderer
 import org.koitharu.kotatsu_dl.model.MangaSourceComboBoxModel
 import org.koitharu.kotatsu_dl.model.MangaSourceRenderer
 import org.koitharu.kotatsu_dl.model.PagedListModel
 import org.koitharu.kotatsu_dl.setings.SettingsDialog
-import org.koitharu.kotatsu_dl.util.CliArguments
-import org.koitharu.kotatsu_dl.util.DoubleClickListener
-import org.koitharu.kotatsu_dl.util.getResIcon
-import org.koitharu.kotatsu_dl.util.windowScope
+import org.koitharu.kotatsu_dl.util.*
 import java.awt.BorderLayout
 import java.awt.Dimension
 import java.awt.GridLayout
@@ -146,12 +141,12 @@ class MainWindow(
 				if (offset == 0) {
 					mangaListModel.clearListData()
 				}
-				runCatching {
+				runCatchingCancellable {
 					val query = textFieldSearch.text?.trim()?.takeUnless(String::isEmpty)
 					withContext(Dispatchers.Default) {
 						when {
 							selectedMangaSource != MangaSource.LOCAL -> {
-								val parser = selectedMangaSource.newParser(MangaLoaderContextImpl)
+								val parser = ParsersFactory.create(selectedMangaSource)
 								if (query == null) {
 									parser.getList(offset, emptySet(), null)
 								} else {
