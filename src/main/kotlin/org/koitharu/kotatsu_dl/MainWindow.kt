@@ -78,7 +78,7 @@ class MainWindow(
 		toolbar.isFloatable = false
 		toolbar.add(comboBoxSource)
 		toolbar.addSeparator()
-		toolbar.add(JLabel(messages.getString("search_")))
+		toolbar.add(JLabel(messages.getString("search_") + " "))
 		toolbar.add(textFieldSearch)
 		toolbar.add(searchButton)
 		toolbar.addSeparator()
@@ -153,10 +153,12 @@ class MainWindow(
 									parser.getList(offset, query)
 								}
 							}
+
 							offset == 0 -> CompositeSearchHelper(
 								sources = MangaSource.values().filterNot { it == MangaSource.LOCAL },
 								parallelism = 6,
 							).doSearch(query)
+
 							else -> emptyList()
 						}
 					}

@@ -113,7 +113,7 @@ class DetailsPanel(
 		labelSubtitle.text = manga.tags.joinToString { it.title }
 		labelDescription.text = manga.description?.let { "<html>$it</html>" }
 		buttonDownload.isEnabled = !manga.chapters.isNullOrEmpty()
-		AsyncImage(this, manga.largeCoverUrl ?: manga.coverUrl)
+		AsyncImage(this, manga.source, manga.largeCoverUrl ?: manga.coverUrl)
 			.resize(labelCover.preferredSize.width, labelCover.preferredSize.height)
 			.load {
 				labelCover.icon = ImageIcon(it)

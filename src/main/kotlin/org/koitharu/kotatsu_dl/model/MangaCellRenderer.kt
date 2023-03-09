@@ -55,7 +55,7 @@ class MangaCellRenderer(
 		val cover = imageCache[manga.coverUrl]
 		labelIcon.icon = ImageIcon(cover ?: placeholder)
 		if (cover == null) {
-			AsyncImage(scope, manga.coverUrl)
+			AsyncImage(scope, manga.source, manga.coverUrl)
 				.resize(imageWidth, imageHeight)
 				.fallback(placeholder)
 				.load {

@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu_dl.util
 
 import kotlinx.coroutines.*
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu_dl.env.MangaLoaderContextImpl
 import java.awt.Image
 import java.util.function.Consumer
@@ -8,12 +9,15 @@ import javax.imageio.ImageIO
 
 class AsyncImage(
 	private val scope: CoroutineScope,
+	source: MangaSource,
 	private val url: String,
 ) {
 
 	private var targetWidth: Int = -1
 	private var targetHeight: Int = -1
 	private var fallback: Image? = null
+
+	private val webClient = MangaLoaderContextImpl.newWebClient(source)
 
 	fun resize(width: Int, height: Int): AsyncImage {
 		targetHeight = height
@@ -36,7 +40,7 @@ class AsyncImage(
 	}
 
 	private suspend fun loadImageImpl(): Image? {
-		return MangaLoaderContextImpl.httpGet(url).use {
+		return webClient.httpGet(url).use {
 			ImageIO.read(checkNotNull(it.body).byteStream())
 		}
 	}

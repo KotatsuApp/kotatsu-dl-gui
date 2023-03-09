@@ -1,9 +1,7 @@
 package org.koitharu.kotatsu_dl.util
 
 import kotlinx.coroutines.*
-import okhttp3.Headers
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu_dl.env.Constants
 import org.koitharu.kotatsu_dl.env.MangaLoaderContextImpl
 import java.awt.Image
 import java.util.function.Consumer
@@ -45,9 +43,9 @@ class AsyncFavicon(
 		val favicons = parser.getFavicons()
 		val size = maxOf(targetHeight, targetWidth)
 		val favicon = favicons.find(if (size < 0) 999 else size) ?: return null
-		val image = MangaLoaderContextImpl.httpGet(
+		val client = MangaLoaderContextImpl.newWebClient(source)
+		val image = client.httpGet(
 			favicon.url,
-			Headers.headersOf(Constants.HEADER_REFERER, "https://${parser.getDomain()}/"),
 		).use {
 			ImageIO.read(checkNotNull(it.body).byteStream())
 		} ?: return null

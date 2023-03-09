@@ -4,10 +4,10 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.sync.Semaphore
-import okhttp3.Headers
 import okhttp3.Request
 import okio.IOException
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu_dl.env.Constants
 import org.koitharu.kotatsu_dl.env.MangaLoaderContextImpl
@@ -43,12 +43,12 @@ class DownloadTask(
 		emit(State.Preparing(manga, null, startId))
 		var cover: Image? = null
 		var output: MangaOutput? = null
+		val webClient = MangaLoaderContextImpl.newWebClient(manga.source)
 		try {
 			val repo = ParsersFactory.create(manga.source)
 			cover = runCatchingCancellable {
-				MangaLoaderContextImpl.httpGet(
+				webClient.httpGet(
 					manga.coverUrl,
-					Headers.headersOf(Constants.HEADER_REFERER, manga.publicUrl),
 				).use {
 					ImageIO.read(checkNotNull(it.body).byteStream())
 				}.getScaledInstance(coverWidth, coverHeight, Image.SCALE_SMOOTH)
@@ -58,7 +58,7 @@ class DownloadTask(
 			output = MangaOutput(destination, writer, root)
 			output.prepare(data)
 			val coverUrl = data.largeCoverUrl ?: data.coverUrl
-			downloadFile(coverUrl, data.publicUrl).let { file ->
+			downloadFile(coverUrl, data.source).let { file ->
 				output.addCover(file, getFileExtensionFromUrl(coverUrl))
 			}
 			val chapters = if (chaptersIds == null) {
@@ -73,7 +73,7 @@ class DownloadTask(
 						failsafe@ do {
 							try {
 								val url = repo.getPageUrl(page)
-								val file = downloadFile(url, page.referer)
+								val file = downloadFile(url, page.source)
 								output.addPage(
 									chapter,
 									file,
@@ -116,10 +116,10 @@ class DownloadTask(
 		emit(State.Error(manga, null, startId, e))
 	}
 
-	private suspend fun downloadFile(url: String, referer: String): File {
+	private suspend fun downloadFile(url: String, source: MangaSource): File {
 		val request = Request.Builder()
 			.url(url)
-			.header(Constants.HEADER_REFERER, referer)
+			.tag(MangaSource::class.java, source)
 			.get()
 			.build()
 		val call = okHttp.newCall(request)
