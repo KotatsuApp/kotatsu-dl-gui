@@ -31,6 +31,6 @@ will. Specifically you can redistribute and/or modify it under the terms of the
 published by the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
-### Disclaimer
+### DMCA disclaimer
 
-The developers of this application does not have any affiliation with the content providers available.
+The developers of this application have no affiliation with the content available in the app. It is collected from sources freely available through any web browser.
