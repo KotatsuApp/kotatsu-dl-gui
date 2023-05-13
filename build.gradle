@@ -2,12 +2,12 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
-	id 'org.jetbrains.kotlin.jvm' version '1.8.10'
+	id 'org.jetbrains.kotlin.jvm' version '1.8.21'
 	id 'application'
 }
 
 group = 'org.koitharu'
-version = '0.3'
+version = '0.4'
 
 repositories {
 	mavenCentral()
@@ -47,10 +47,10 @@ jar {
 
 
 dependencies {
-	implementation 'com.github.nv95:kotatsu-parsers:413f4a2f10'
+	implementation 'com.github.nv95:kotatsu-parsers:83cca4ef12'
 
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4'
-	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.6.4'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0'
+	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.0'
 
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	implementation 'com.squareup.okio:okio:3.2.0'
