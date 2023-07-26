@@ -13,7 +13,7 @@ object ParsersFactory {
 
 	fun create(source: MangaSource): MangaParser {
 		cache[source]?.get()?.let { return it }
-		val result = source.newParser(MangaLoaderContextImpl)
+		val result = MangaLoaderContextImpl.newParserInstance(source)
 		cache[source] = SoftReference(result)
 		return result
 	}

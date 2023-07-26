@@ -17,7 +17,7 @@ class CommonHeadersInterceptor(
 	override fun intercept(chain: Interceptor.Chain): Response {
 		val request = chain.request()
 		val source = request.tag(MangaSource::class.java)
-		val parser = source?.newParser(MangaLoaderContextImpl)
+		val parser = source?.let { MangaLoaderContextImpl.newParserInstance(it) }
 		val sourceHeaders = parser?.headers
 		val headersBuilder = request.headers.newBuilder()
 		if (sourceHeaders != null) {
