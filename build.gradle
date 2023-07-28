@@ -47,7 +47,7 @@ jar {
 
 
 dependencies {
-	implementation 'com.github.nv95:kotatsu-parsers:8e452f4271'
+	implementation 'com.github.nv95:kotatsu-parsers:74ffe9418b'
 
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3'
 	implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.3'
