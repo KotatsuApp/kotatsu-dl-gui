@@ -25,7 +25,7 @@ fun WindowButton(icon: ImageVector, onClick: () -> Unit) {
 	Surface(
 		onClick = onClick,
 		modifier = Modifier.fillMaxHeight().width(42.dp),
-		contentColor = Color.Black,
+		contentColor = Color.White,
 		color = Color.Transparent
 	) {
 		Icon(icon, "", Modifier.padding(10.dp))

@@ -11,7 +11,7 @@ import kotlin.reflect.full.memberProperties
 
 @Composable
 fun rememberColorScheme(hue: Float = 0.02f): ColorScheme = remember {
-	lightColorScheme().also { scheme ->
+	darkColorScheme().also { scheme ->
 		ColorScheme::class.memberProperties.filterIsInstance<KMutableProperty1<ColorScheme, Color>>()
 			.filter { "error" !in it.name.lowercase() }
 			.map { prop ->
