@@ -13,12 +13,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import org.koitharu.kotatsu_dl.ui.AppTopBar
+import org.koitharu.kotatsu_dl.ui.screens.details.SourceScreen
 import org.koitharu.kotatsu_dl.ui.screens.main.MainScreen
 import org.koitharu.kotatsu_dl.ui.screens.settings.SettingsScreen
 import org.koitharu.kotatsu_dl.ui.state.TopBar
 
 sealed class Screen(val title: String, val transparentTopBar: Boolean = false) {
 	object Main : Screen("kotatsu-dl", transparentTopBar = true)
+	object Source : Screen("Source")
 	object Settings : Screen("Settings")
 }
 
@@ -34,6 +36,7 @@ fun Screens() {
 		TransitionSlideUp(screen != Screen.Main) {
 			when (screen) {
 				Screen.Settings -> SettingsScreen()
+				Screen.Source -> SourceScreen()
 				else -> {}
 			}
 		}
