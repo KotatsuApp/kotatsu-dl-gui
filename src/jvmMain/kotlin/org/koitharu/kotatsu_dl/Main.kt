@@ -15,6 +15,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import org.koitharu.kotatsu_dl.data.SourcesWithManga
 import org.koitharu.kotatsu_dl.logic.KotatsuState
 import org.koitharu.kotatsu_dl.ui.KotatsuTypography
 import org.koitharu.kotatsu_dl.ui.state.TopBarProvider
@@ -34,7 +35,7 @@ fun main() {
 	application {
 		val windowState = rememberWindowState(placement = WindowPlacement.Floating)
 		val kotatsuState by produceState<KotatsuState?>(null) {
-			value = KotatsuState()
+			value = KotatsuState(SourcesWithManga.loadSources().toList())
 		}
 		val onClose: () -> Unit = {
 			exitApplication()
