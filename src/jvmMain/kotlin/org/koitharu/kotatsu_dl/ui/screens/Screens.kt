@@ -1,8 +1,6 @@
 package org.koitharu.kotatsu_dl.ui.screens
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -12,13 +10,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import org.koitharu.kotatsu_dl.ui.AppTopBar
 import org.koitharu.kotatsu_dl.ui.screens.main.MainScreen
+import org.koitharu.kotatsu_dl.ui.screens.settings.SettingsScreen
 import org.koitharu.kotatsu_dl.ui.state.TopBar
 
 sealed class Screen(val title: String, val transparentTopBar: Boolean = false) {
 	object Main : Screen("kotatsu-dl", transparentTopBar = true)
+	object Settings : Screen("Settings")
 }
 
 var screen: Screen by mutableStateOf(Screen.Main)
@@ -29,12 +30,31 @@ fun Screens() {
 	TransitionFade(screen == Screen.Main) {
 		MainScreen()
 	}
+	TranslucentTopBar(screen) {
+		TransitionSlideUp(screen != Screen.Main) {
+			when (screen) {
+				Screen.Settings -> SettingsScreen()
+				else -> {}
+			}
+		}
+	}
 	AppTopBar(
 		TopBar,
 		screen.transparentTopBar,
 		showBackButton = screen != Screen.Main,
 		onBackButtonClicked = { screen = Screen.Main }
 	)
+}
+
+@Composable
+fun TransitionSlideUp(enabled: Boolean, content: @Composable () -> Unit) {
+	AnimatedVisibility(
+		enabled,
+		enter = fadeIn() + slideIn(initialOffset = { IntOffset(0, 100) }),
+		exit = fadeOut() + slideOut(targetOffset = { IntOffset(0, 100) }),
+	) {
+		content()
+	}
 }
 
 @Composable
