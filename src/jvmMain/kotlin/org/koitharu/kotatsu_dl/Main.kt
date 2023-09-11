@@ -16,6 +16,7 @@ import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import org.koitharu.kotatsu_dl.logic.KotatsuState
+import org.koitharu.kotatsu_dl.ui.KotatsuTypography
 import org.koitharu.kotatsu_dl.ui.state.TopBarProvider
 import org.koitharu.kotatsu_dl.ui.state.TopBarState
 import org.koitharu.kotatsu_dl.ui.rememberColorScheme
@@ -49,7 +50,7 @@ fun main() {
 			val ready = kotatsuState != null
 			val scheme = rememberColorScheme(60 / 100F)
 			window.minimumSize = Dimension(800, 600)
-			MaterialTheme(colorScheme = scheme) {
+			MaterialTheme(colorScheme = scheme, typography = KotatsuTypography) {
 				CompositionLocalProvider(TopBarProvider provides topBarState) {
 					Surface(
 						shape = RoundedCornerShape(14.dp)
