@@ -45,6 +45,7 @@ fun Screens() {
 		TopBar,
 		screen.transparentTopBar,
 		showBackButton = screen != Screen.Main,
+		showSearchBar = screen == Screen.Source,
 		onBackButtonClicked = { screen = Screen.Main }
 	)
 }

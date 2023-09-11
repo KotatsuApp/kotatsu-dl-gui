@@ -9,11 +9,13 @@ import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Minimize
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import org.koitharu.kotatsu_dl.ui.screens.screen
@@ -32,20 +34,22 @@ fun WindowButton(icon: ImageVector, onClick: () -> Unit) {
 	}
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppTopBar(
 	state: TopBarState,
 	trasparent: Boolean,
+	showSearchBar: Boolean,
 	showBackButton: Boolean,
 	onBackButtonClicked: (() -> Unit),
 ) = state.windowScope.WindowDraggableArea {
 	Box(
-		Modifier.fillMaxWidth().height(54.dp),
+		Modifier.fillMaxWidth().height(64.dp),
 	) {
 		AnimatedVisibility(
 			!trasparent,
-			enter = slideIn(initialOffset = { IntOffset(0, -54) }),
-			exit = slideOut(targetOffset = { IntOffset(0, -54) })
+			enter = slideIn(initialOffset = { IntOffset(0, -64) }),
+			exit = slideOut(targetOffset = { IntOffset(0, -64) })
 		) {
 			Surface(tonalElevation = 2.dp, modifier = Modifier.fillMaxSize()) {}
 		}
@@ -58,9 +62,10 @@ fun AppTopBar(
 				Modifier.weight(1f),
 				verticalAlignment = Alignment.CenterVertically,
 			) {
+				var text by remember { mutableStateOf(TextFieldValue("")) }
 				AnimatedVisibility(showBackButton,
-					enter = slideIn(initialOffset = { IntOffset(0, -54) }),
-					exit = slideOut(targetOffset = { IntOffset(0, -54) })
+					enter = slideIn(initialOffset = { IntOffset(0, -64) }),
+					exit = slideOut(targetOffset = { IntOffset(0, -64) })
 				) {
 					IconButton(onClick = onBackButtonClicked) {
 						Icon(Icons.Outlined.ArrowBack, contentDescription = "Back button")
@@ -68,13 +73,26 @@ fun AppTopBar(
 					Spacer(Modifier.width(56.dp))
 				}
 				AnimatedVisibility(!trasparent,
-					enter = slideIn(initialOffset = { IntOffset(0, -54) }) + fadeIn(),
-					exit = slideOut(targetOffset = { IntOffset(0, -54) }) + fadeOut()
+					enter = slideIn(initialOffset = { IntOffset(0, -64) }) + fadeIn(),
+					exit = slideOut(targetOffset = { IntOffset(0, -64) }) + fadeOut()
 				) {
 					Text(
 						text = screen.title,
 						color = MaterialTheme.colorScheme.primary,
 						style = MaterialTheme.typography.titleLarge
+					)
+				}
+				AnimatedVisibility(showSearchBar,
+					enter = slideIn(initialOffset = { IntOffset(0, -64) }),
+					exit = slideOut(targetOffset = { IntOffset(0, -64) })
+				) {
+					OutlinedTextField(
+						value = text,
+						modifier = Modifier.padding(16.dp, 4.dp, 16.dp, 4.dp),
+						label = { Text(text = "Search", color = MaterialTheme.colorScheme.onSurface) },
+						onValueChange = {
+							text = it
+						}
 					)
 				}
 			}
