@@ -33,14 +33,15 @@ kotlin {
 				implementation(compose.materialIconsExtended)
 				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 				implementation("com.charleskorn.kaml:kaml:0.53.0")
-				implementation("io.ktor:ktor-client-core:1.6.8")
-				implementation("io.ktor:ktor-client-cio:1.6.8")
+				implementation("io.ktor:ktor-client-core:2.3.4")
+				implementation("io.ktor:ktor-client-cio:2.3.4")
 				implementation("org.json:json:20220320")
 				implementation("com.github.nv95:kotatsu-parsers:74ffe9418b")
 				implementation("com.squareup.okhttp3:okhttp:4.11.0")
 				implementation("com.squareup.okio:okio:3.4.0")
 				implementation("org.json:json:20230618")
 				implementation("io.webfolder:quickjs:1.1.0")
+				implementation("media.kamel:kamel-image:0.7.3")
 			}
 		}
 		val jvmTest by getting

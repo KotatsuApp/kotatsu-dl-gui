@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.*
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -18,12 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.koitharu.kotatsu.parsers.MangaParser
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu_dl.LocalKotatsuState
 import org.koitharu.kotatsu_dl.data.model.ListModel
 import org.koitharu.kotatsu_dl.ui.screens.main.MangaItem
-import org.koitharu.kotatsu_dl.ui.screens.main.SourceGroupItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,7 +25,6 @@ import org.koitharu.kotatsu_dl.ui.screens.main.SourceGroupItem
 fun SourceScreen(items: ListModel) {
 	val state = LocalKotatsuState
 	Column {
-		Text(items.toString(), modifier = Modifier.padding(24.dp), style = MaterialTheme.typography.displayMedium)
 		Box {
 			val lazyListState = rememberLazyGridState()
 			Column {
