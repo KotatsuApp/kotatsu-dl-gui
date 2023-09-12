@@ -12,13 +12,19 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import org.koitharu.kotatsu.parsers.MangaParser
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu_dl.data.model.ListModel
 import org.koitharu.kotatsu_dl.ui.AppTopBar
 import org.koitharu.kotatsu_dl.ui.screens.details.SourceScreen
 import org.koitharu.kotatsu_dl.ui.screens.main.MainScreen
 import org.koitharu.kotatsu_dl.ui.screens.settings.SettingsScreen
 import org.koitharu.kotatsu_dl.ui.state.TopBar
 
-sealed class Screen(val title: String, val transparentTopBar: Boolean = false) {
+sealed class Screen(
+	val title: String,
+	val transparentTopBar: Boolean = false
+) {
 	object Main : Screen("kotatsu-dl", transparentTopBar = true)
 	object Source : Screen("Source")
 	object Settings : Screen("Settings")
@@ -28,7 +34,9 @@ var screen: Screen by mutableStateOf(Screen.Main)
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun Screens() {
+fun Screens(
+	items: ListModel
+) {
 	TransitionFade(screen == Screen.Main) {
 		MainScreen()
 	}
@@ -36,7 +44,7 @@ fun Screens() {
 		TransitionSlideUp(screen != Screen.Main) {
 			when (screen) {
 				Screen.Settings -> SettingsScreen()
-				Screen.Source -> SourceScreen()
+				Screen.Source -> SourceScreen(items)
 				else -> {}
 			}
 		}

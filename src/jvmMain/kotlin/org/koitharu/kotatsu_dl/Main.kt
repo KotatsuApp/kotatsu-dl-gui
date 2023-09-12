@@ -15,6 +15,9 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu_dl.data.Config
+import org.koitharu.kotatsu_dl.data.Directories
 import org.koitharu.kotatsu_dl.data.SourcesWithManga
 import org.koitharu.kotatsu_dl.logic.KotatsuState
 import org.koitharu.kotatsu_dl.ui.KotatsuTypography
@@ -35,10 +38,15 @@ fun main() {
 	application {
 		val windowState = rememberWindowState(placement = WindowPlacement.Floating)
 		val kotatsuState by produceState<KotatsuState?>(null) {
-			value = KotatsuState(SourcesWithManga.loadSources().toList())
+			val config = Config.read()
+			value = KotatsuState(
+				config,
+				SourcesWithManga.loadParsers(MangaSource.values().toList())
+			)
 		}
 		val onClose: () -> Unit = {
 			exitApplication()
+			kotatsuState?.save()
 		}
 		Window(
 			state = windowState,
@@ -49,7 +57,8 @@ fun main() {
 		) {
 			val topBarState = remember { TopBarState(onClose, windowState, this) }
 			val ready = kotatsuState != null
-			val scheme = rememberColorScheme(60 / 100F)
+			val hue = if (ready) kotatsuState?.hue else 0f
+			val scheme = rememberColorScheme(hue!!)
 			window.minimumSize = Dimension(800, 600)
 			MaterialTheme(colorScheme = scheme, typography = KotatsuTypography) {
 				CompositionLocalProvider(TopBarProvider provides topBarState) {
@@ -66,7 +75,8 @@ fun main() {
 								CompositionLocalProvider(
 									KotatsuStateProvider provides kotatsuState!!,
 								) {
-									Screens()
+									Directories.createDirs()
+									Screens(items = kotatsuState!!.items[1])
 								}
 							}
 						}

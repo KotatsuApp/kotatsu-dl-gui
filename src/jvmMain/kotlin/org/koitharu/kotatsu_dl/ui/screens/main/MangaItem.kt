@@ -12,9 +12,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.koitharu.kotatsu.parsers.model.Manga
+import org.koitharu.kotatsu_dl.data.model.ListModel
+import org.koitharu.kotatsu_dl.data.model.MangaItemModel
 
 @Composable
-fun MangaItem(manga: Manga) {
+fun MangaItem(manga: ListModel) {
 
 	var expanded by remember { mutableStateOf(false) }
 	val tonalElevation by animateDpAsState(if (expanded) 1.6.dp else 1.dp)
@@ -26,7 +28,7 @@ fun MangaItem(manga: Manga) {
 			backgroundColor = MaterialTheme.colorScheme.primaryContainer
 		) {
 			Text(
-				manga.title, Modifier.weight(1f),
+				manga.toString(), Modifier.weight(1f),
 				style = MaterialTheme.typography.bodyLarge,
 			)
 		}

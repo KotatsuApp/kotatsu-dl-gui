@@ -6,8 +6,13 @@ import kotlinx.serialization.Contextual
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import org.koitharu.kotatsu.parsers.InternalParsersApi
+import org.koitharu.kotatsu.parsers.MangaParser
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu_dl.data.model.ListModel
+import org.koitharu.kotatsu_dl.data.model.MangaSourceItem
+import org.koitharu.kotatsu_dl.logic.MangaLoaderContextImpl
 
 
 @Serializable
@@ -26,8 +31,9 @@ data class SourcesWithManga(
 		.associateBy { it.title }
 
 	companion object {
-		suspend fun loadSources() = withContext(Dispatchers.IO) {
-			return@withContext MangaSource.values()
+		suspend fun loadParsers(sources: List<MangaSource>) : List<ListModel> = withContext(Dispatchers.IO) {
+			val result = ArrayList<ListModel>(sources.size + 4)
+			return@withContext sources.mapTo(result) { MangaSourceItem(it) }
 		}
 	}
 
