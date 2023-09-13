@@ -12,8 +12,6 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import org.koitharu.kotatsu.parsers.MangaParser
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu_dl.data.model.ListModel
 import org.koitharu.kotatsu_dl.ui.AppTopBar
 import org.koitharu.kotatsu_dl.ui.screens.details.SourceScreen
@@ -73,7 +71,7 @@ fun TransitionSlideUp(enabled: Boolean, content: @Composable () -> Unit) {
 fun TranslucentTopBar(currentScreen: Screen, content: @Composable () -> Unit) {
 	Column {
 		AnimatedVisibility(!currentScreen.transparentTopBar, enter = fadeIn(), exit = fadeOut()) {
-			Spacer(Modifier.height(54.dp))
+			Spacer(Modifier.height(64.dp))
 		}
 		content()
 	}

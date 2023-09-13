@@ -58,7 +58,7 @@ fun main() {
 			val topBarState = remember { TopBarState(onClose, windowState, this) }
 			val ready = kotatsuState != null
 			val hue = if (ready) kotatsuState?.hue else 0f
-			val scheme = rememberColorScheme(hue!!)
+			val scheme = rememberColorScheme(hue?.div(100f) ?: 0f)
 			window.minimumSize = Dimension(800, 600)
 			MaterialTheme(colorScheme = scheme, typography = KotatsuTypography) {
 				CompositionLocalProvider(TopBarProvider provides topBarState) {
