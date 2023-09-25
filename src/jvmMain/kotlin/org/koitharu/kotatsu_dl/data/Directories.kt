@@ -9,10 +9,11 @@ object Directories {
 
 	val home = Path(System.getProperty("user.home"))
 
-	val config = when (OS.get()) {
+	val config = when (OS.current) {
 		OS.WINDOWS -> Path(System.getenv("APPDATA"))
 		OS.MAC -> Path(System.getProperty("user.home")) / "Library/Application Support"
 		OS.LINUX -> home / ".config"
+		OS.UNKNOWN -> Path(".")
 	} / "kotatsu-dl"
 
 	val configFile = config / "kotatsu-dl-config.yml"
@@ -20,5 +21,4 @@ object Directories {
 	fun createDirs() {
 		config.createDirectories()
 	}
-
 }

@@ -1,4 +1,3 @@
-import org.jetbrains.compose.compose
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
@@ -27,20 +26,17 @@ kotlin {
 			dependencies {
 				implementation(kotlin("reflect"))
 				implementation(compose.desktop.currentOs)
-				@OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
 				implementation(compose.material3)
-				implementation(compose.material)
 				implementation(compose.materialIconsExtended)
-				implementation("androidx.emoji2:emoji2-views:1.4.0-beta05")
+// 				implementation("androidx.emoji2:emoji2-views:1.4.0-beta05")
 				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 				implementation("com.charleskorn.kaml:kaml:0.53.0")
 				implementation("io.ktor:ktor-client-core:2.3.4")
 				implementation("io.ktor:ktor-client-cio:2.3.4")
 				implementation("org.json:json:20220320")
-				implementation("com.github.KotatsuApp:kotatsu-parsers:7fbeb2e266")
+				implementation("com.github.KotatsuApp:kotatsu-parsers:0004be15ba")
 				implementation("com.squareup.okhttp3:okhttp:4.11.0")
 				implementation("com.squareup.okio:okio:3.4.0")
-				implementation("org.json:json:20230618")
 				implementation("io.webfolder:quickjs:1.1.0")
 				implementation("media.kamel:kamel-image:0.7.3")
 				implementation("com.seanproctor:data-table-material3:0.5.1")

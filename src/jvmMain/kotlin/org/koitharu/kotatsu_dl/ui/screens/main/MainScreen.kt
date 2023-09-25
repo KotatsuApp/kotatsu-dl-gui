@@ -37,7 +37,7 @@ fun MainScreen() {
 		Row {
 			NavigationRail {
 				Image(
-					painter = painterResource("icon_256.png"),
+					painter = painterResource("icon_large.png"),
 					contentDescription = "Kotatsu Logo",
 					contentScale = ContentScale.FillWidth,
 					modifier = Modifier.padding(16.dp).height(42.dp).width(42.dp),
@@ -88,7 +88,7 @@ fun MainScreen() {
 										cell {
 											Surface(
 												shape = RoundedCornerShape(4.dp),
-												modifier = Modifier.size(42.dp)
+												modifier = Modifier.size(42.dp),
 											) {
 												KamelImage(
 													asyncPainterResource("https://androidexample365.com/assets/favicon.png"),
