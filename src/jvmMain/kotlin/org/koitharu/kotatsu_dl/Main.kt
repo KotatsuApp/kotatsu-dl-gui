@@ -15,6 +15,7 @@ import io.kamel.image.config.resourcesFetcher
 import io.ktor.client.*
 import org.koitharu.kotatsu_dl.data.Config
 import org.koitharu.kotatsu_dl.logic.KotatsuState
+import org.koitharu.kotatsu_dl.ui.screens.WindowManager
 import org.koitharu.kotatsu_dl.ui.screens.main.FaviconFetcher
 import org.koitharu.kotatsu_dl.ui.screens.main.MainWindow
 
@@ -33,6 +34,7 @@ fun main() {
 			batikSvgDecoder()
 			fetcher(FaviconFetcher(HttpClient()))
 		}
+		val wm = WindowManager()
 		CompositionLocalProvider(
 			LocalKamelConfig provides kamelConfig,
 			KotatsuStateProvider provides kotatsuState,
@@ -43,10 +45,9 @@ fun main() {
 					kotatsuState.save()
 					exitApplication()
 				},
+				wm = wm,
 			)
-			LocalKotatsuState.listWindows.forEach {
-				it.invoke()
-			}
+			wm()
 		}
 	}
 }

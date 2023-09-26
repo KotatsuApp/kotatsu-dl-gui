@@ -31,13 +31,16 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toTitleCase
-import org.koitharu.kotatsu_dl.LocalKotatsuState
+import org.koitharu.kotatsu_dl.ui.NotoEmoji
+import org.koitharu.kotatsu_dl.ui.flagEmoji
+import org.koitharu.kotatsu_dl.ui.screens.WindowManager
 import java.util.*
 
 @Composable
 fun MainWindow(
 	state: WindowState,
 	onClose: () -> Unit,
+	wm: WindowManager,
 ) = Window(
 	state = state,
 	title = "kotatsu-dl",
@@ -72,24 +75,24 @@ fun MainWindow(
 					) {
 						Text(
 							modifier = Modifier.padding(end = 12.dp),
-							text = lang?.toFlagEmoji() ?: "❓",
+							text = locale.flagEmoji ?: "❓",
+							fontFamily = NotoEmoji,
 						)
 						Text(text = locale?.getDisplayName(locale)?.toTitleCase(locale) ?: "Other")
 					}
 				}
 			}
-			val kotatsuState = LocalKotatsuState
 			Box {
 				val listState = rememberLazyGridState()
 				LazyVerticalGrid(
 					modifier = Modifier.padding(4.dp),
-					columns = GridCells.Adaptive(minSize = 128.dp),
+					columns = GridCells.Adaptive(minSize = 82.dp),
 					state = listState,
 				) {
 					items(sources[selectedLocale].orEmpty()) { source ->
 						Card(
 							modifier = Modifier.padding(4.dp).clickable {
-								kotatsuState.openListWindow(source)
+								wm.openListWindow(source)
 							},
 						) {
 							Column(
@@ -104,14 +107,29 @@ fun MainWindow(
 									KamelImage(
 										resource = asyncPainterResource(source),
 										contentDescription = source.title,
-										onLoading = { progress -> CircularProgressIndicator(progress) },
-										onFailure = { e ->
-											Icon(
-												imageVector = Icons.Default.Error,
-												contentDescription = e.message,
-											)
+										onLoading = { progress ->
+											Box(
+												modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+												contentAlignment = Alignment.Center,
+											) {
+												CircularProgressIndicator(
+													progress = progress,
+													modifier = Modifier.align(Alignment.Center),
+												)
+											}
 										},
-										animationSpec = tween(500),
+										onFailure = { e ->
+											Box(
+												modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+												contentAlignment = Alignment.Center,
+											) {
+												Icon(
+													imageVector = Icons.Default.Error,
+													contentDescription = e.message,
+												)
+											}
+										},
+										animationSpec = tween(200),
 									)
 								}
 								Text(

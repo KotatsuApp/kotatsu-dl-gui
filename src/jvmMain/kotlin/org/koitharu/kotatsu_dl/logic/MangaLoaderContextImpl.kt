@@ -3,7 +3,6 @@ package org.koitharu.kotatsu_dl.logic
 import com.koushikdutta.quack.QuackContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.CookieJar
 import okhttp3.OkHttpClient
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.config.ConfigKey
@@ -33,7 +32,7 @@ object MangaLoaderContextImpl : MangaLoaderContext() {
 		.addInterceptor(CommonHeadersInterceptor(userAgent))
 		.build()
 
-	override suspend fun evaluateJs(script: String): String? = withContext(Dispatchers.Main) {
+	override suspend fun evaluateJs(script: String): String? = withContext(Dispatchers.Default) {
 		QuackContext.create().use {
 			it.evaluate(script)?.toString()
 		}
