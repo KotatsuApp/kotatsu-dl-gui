@@ -1,14 +1,11 @@
 package org.koitharu.kotatsu_dl.ui.screens.details
 
-import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,6 +20,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.mapToSet
 import org.koitharu.kotatsu_dl.logic.downloader.LocalDownloadManager
+import org.koitharu.kotatsu_dl.ui.LocalResources
 import org.koitharu.kotatsu_dl.ui.MangaCover
 import org.koitharu.kotatsu_dl.ui.screens.Window
 import org.koitharu.kotatsu_dl.ui.screens.WindowManager
@@ -50,7 +48,9 @@ class DetailsWindow(
 			}
 		}
 
-		Row {
+		Row(
+			modifier = Modifier.background(MaterialTheme.colorScheme.background)
+		) {
 			Column(
 				modifier = Modifier
 					.widthIn(min = 200.dp, max = 600.dp)
@@ -168,7 +168,7 @@ class DetailsWindow(
 						},
 						enabled = checkedChapters.any { it.value },
 					) {
-						Text("Download")
+						Text(LocalResources.current.string("download"))
 					}
 				}
 			}

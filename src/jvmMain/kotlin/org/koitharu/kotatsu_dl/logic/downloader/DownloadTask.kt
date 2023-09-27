@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.await
 import org.koitharu.kotatsu_dl.C
+import org.koitharu.kotatsu_dl.data.Directories
 import org.koitharu.kotatsu_dl.logic.MangaLoaderContextImpl
 import org.koitharu.kotatsu_dl.util.ParsersFactory
 import org.koitharu.kotatsu_dl.util.deleteAwait
@@ -23,8 +24,7 @@ class DownloadTask(
 ) {
 
 	private val okHttp = MangaLoaderContextImpl.httpClient
-	private val coverWidth = 200
-	private val root = File(File(System.getProperty("user.home"), ".cache"), "kotatsu-dl")
+	private val root = Directories.cache.toFile()
 	val startId = System.currentTimeMillis()
 	private val tempFile = File(root, "$startId.tmp")
 

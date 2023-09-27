@@ -1,8 +1,9 @@
 package org.koitharu.kotatsu_dl
 
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
@@ -14,45 +15,41 @@ import io.kamel.image.config.LocalKamelConfig
 import io.kamel.image.config.batikSvgDecoder
 import io.kamel.image.config.resourcesFetcher
 import io.ktor.client.*
-import org.koitharu.kotatsu_dl.data.Config
-import org.koitharu.kotatsu_dl.logic.KotatsuState
 import org.koitharu.kotatsu_dl.logic.downloader.DownloadManager
 import org.koitharu.kotatsu_dl.logic.downloader.LocalDownloadManager
+import org.koitharu.kotatsu_dl.ui.KotatsuTypography
+import org.koitharu.kotatsu_dl.ui.LocalResources
+import org.koitharu.kotatsu_dl.ui.Resources
+import org.koitharu.kotatsu_dl.ui.rememberColorScheme
 import org.koitharu.kotatsu_dl.ui.screens.WindowManager
 import org.koitharu.kotatsu_dl.ui.screens.main.FaviconFetcher
 import org.koitharu.kotatsu_dl.ui.screens.main.MainWindow
 
-private val KotatsuStateProvider = compositionLocalOf<KotatsuState> { error("No local versions provided") }
-val LocalKotatsuState: KotatsuState
-	@Composable
-	get() = KotatsuStateProvider.current
-
 fun main() {
 	application {
-		val windowState = rememberWindowState(placement = WindowPlacement.Floating)
-		val kotatsuState = KotatsuState(Config.read())
 		val kamelConfig = KamelConfig {
 			takeFrom(KamelConfig.Default)
 			resourcesFetcher()
 			batikSvgDecoder()
 			fetcher(FaviconFetcher(HttpClient()))
 		}
-		val wm = WindowManager()
-		val downloadManager = DownloadManager(rememberCoroutineScope())
-		CompositionLocalProvider(
-			LocalKamelConfig provides kamelConfig,
-			KotatsuStateProvider provides kotatsuState,
-			LocalDownloadManager provides downloadManager,
-		) {
-			MainWindow(
-				state = windowState,
-				onClose = {
-					kotatsuState.save()
-					exitApplication()
-				},
-				wm = wm,
-			)
-			wm()
+		val wm = remember { WindowManager() }
+		val appCoroutineScope = rememberCoroutineScope()
+		val downloadManager = remember(appCoroutineScope) { DownloadManager(appCoroutineScope) }
+		MaterialTheme(colorScheme = rememberColorScheme(), typography = KotatsuTypography) {
+			CompositionLocalProvider(
+				LocalKamelConfig provides kamelConfig,
+				LocalDownloadManager provides downloadManager,
+				LocalContentColor provides MaterialTheme.colorScheme.onBackground,
+				LocalResources provides remember { Resources() },
+			) {
+				MainWindow(
+					state = rememberWindowState(placement = WindowPlacement.Floating),
+					onClose = ::exitApplication,
+					wm = wm,
+				)
+				wm()
+			}
 		}
 	}
 }

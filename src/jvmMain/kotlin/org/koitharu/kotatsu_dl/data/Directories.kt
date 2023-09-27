@@ -16,6 +16,13 @@ object Directories {
 		OS.UNKNOWN -> Path(".")
 	} / "kotatsu-dl"
 
+	val cache = when (OS.current) {
+		OS.WINDOWS -> Path(System.getenv("LOCALAPPDATA")) / "Caches"
+		OS.MAC -> Path(System.getProperty("user.home")) / "Library/Caches"
+		OS.LINUX -> home / ".cache"
+		OS.UNKNOWN -> Path(".")
+	} / "kotatsu-dl"
+
 	val configFile = config / "kotatsu-dl-config.yml"
 
 	fun createDirs() {

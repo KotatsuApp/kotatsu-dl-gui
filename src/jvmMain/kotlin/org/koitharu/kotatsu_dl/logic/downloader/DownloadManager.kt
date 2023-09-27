@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.util.toFileNameSafe
+import org.koitharu.kotatsu_dl.data.Config
 import java.awt.FileDialog
 import java.io.File
 
@@ -43,14 +44,19 @@ class DownloadManager(
 
 	fun startDownload(window: ComposeWindow, manga: Manga, chapters: Set<Long>): Boolean {
 		val dialog = FileDialog(window, "Save manga")
+		val config = Config.snapshot()
 		dialog.mode = FileDialog.SAVE
 		dialog.isMultipleMode = false
+		config.lastSaveDir?.let {
+			dialog.directory = it
+		}
 		dialog.file = manga.title.toFileNameSafe() + ".cbz"
 		dialog.isVisible = true
 		val res = dialog.file
 		if (res.isNullOrEmpty()) {
 			return false
 		}
+		Config.update(config.copy(lastSaveDir = dialog.directory))
 		startDownload(manga, chapters, File(dialog.directory, res))
 		return true
 	}

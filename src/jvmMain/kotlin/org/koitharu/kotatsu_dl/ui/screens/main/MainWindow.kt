@@ -34,6 +34,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toTitleCase
 import org.koitharu.kotatsu_dl.logic.downloader.LocalDownloadManager
 import org.koitharu.kotatsu_dl.ui.IconProgressBox
+import org.koitharu.kotatsu_dl.ui.LocalResources
 import org.koitharu.kotatsu_dl.ui.NotoEmoji
 import org.koitharu.kotatsu_dl.ui.flagEmoji
 import org.koitharu.kotatsu_dl.ui.screens.WindowManager
@@ -54,7 +55,9 @@ fun MainWindow(
 	val sources = remember {
 		MangaSource.entries.groupBy { x -> x.locale }
 	}
-	Column {
+	Column(
+		modifier = Modifier.background(MaterialTheme.colorScheme.background),
+	) {
 		Toolbar(
 			modifier = Modifier.background(MaterialTheme.colorScheme.surface).fillMaxWidth(),
 			wm = wm,
@@ -170,12 +173,20 @@ private fun Toolbar(
 				modifier = Modifier.fillMaxSize().padding(4.dp),
 			)
 		} else {
-			Icon(imageVector = Icons.Default.Download, contentDescription = "Downloads")
+			Icon(
+				imageVector = Icons.Default.Download,
+				contentDescription = LocalResources.current.string("downloads"),
+			)
 		}
 	}
 	IconButton(
-		onClick = {},
+		onClick = {
+			wm.showSettingsWindow()
+		},
 	) {
-		Icon(imageVector = Icons.Default.Settings, contentDescription = "Settings")
+		Icon(
+			imageVector = Icons.Default.Settings,
+			contentDescription = LocalResources.current.string("settings"),
+		)
 	}
 }

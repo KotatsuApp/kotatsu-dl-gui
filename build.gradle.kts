@@ -39,7 +39,7 @@ kotlin {
 				implementation("com.squareup.okio:okio:3.4.0")
 				implementation("io.webfolder:quickjs:1.1.0")
 				implementation("media.kamel:kamel-image:0.7.3")
-				implementation("com.seanproctor:data-table-material3:0.5.1")
+				implementation("com.github.Koitharu:jSystemThemeDetector:9a3824cf4b")
 			}
 		}
 		val jvmTest by getting

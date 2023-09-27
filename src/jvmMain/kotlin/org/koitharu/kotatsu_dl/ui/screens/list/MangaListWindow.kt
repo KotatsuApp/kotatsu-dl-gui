@@ -35,6 +35,7 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu_dl.ui.InfiniteGridHandler
+import org.koitharu.kotatsu_dl.ui.LocalResources
 import org.koitharu.kotatsu_dl.ui.MangaCover
 import org.koitharu.kotatsu_dl.ui.NotoEmoji
 import org.koitharu.kotatsu_dl.ui.screens.Window
@@ -79,7 +80,9 @@ class MangaListWindow(
 			isLoading = false
 		}
 
-		Column {
+		Column(
+			modifier = Modifier.background(MaterialTheme.colorScheme.background),
+		) {
 			Row {
 				BasicTextField(
 					modifier = Modifier.widthIn(min = 220.dp),
@@ -104,7 +107,7 @@ class MangaListWindow(
 								innerTextField()
 								if (query.isEmpty()) {
 									Text(
-										text = "Search",
+										text = LocalResources.current.string("search"),
 										color = MaterialTheme.colorScheme.outline,
 									)
 								}

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogState
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -11,6 +12,7 @@ import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu_dl.ui.screens.details.DetailsWindow
 import org.koitharu.kotatsu_dl.ui.screens.downloads.DownloadsWindow
 import org.koitharu.kotatsu_dl.ui.screens.list.MangaListWindow
+import org.koitharu.kotatsu_dl.ui.screens.settings.SettingsDialog
 
 class WindowManager {
 
@@ -35,6 +37,14 @@ class WindowManager {
 			size = DpSize(400.dp, 240.dp),
 		)
 		windowsList.add(DownloadsWindow(state, this))
+	}
+
+	fun showSettingsWindow() {
+		if (windowsList.any { x -> x is SettingsDialog }) {
+			return
+		}
+		val state = DialogState()
+		windowsList.add(SettingsDialog(state, this))
 	}
 
 	fun close(window: Window) {

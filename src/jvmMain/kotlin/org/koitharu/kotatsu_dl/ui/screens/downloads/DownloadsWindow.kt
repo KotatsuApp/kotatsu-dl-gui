@@ -3,6 +3,7 @@ package org.koitharu.kotatsu_dl.ui.screens.downloads
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -45,7 +46,7 @@ class DownloadsWindow(
 	) {
 		val dm = LocalDownloadManager.current
 		Box(
-			modifier = Modifier.fillMaxSize(),
+			modifier = Modifier.background(MaterialTheme.colorScheme.background),
 		) {
 			val downloads by dm.state.collectAsState()
 			if (downloads.isEmpty()) {
@@ -80,134 +81,134 @@ class DownloadsWindow(
 			}
 		}
 	}
-}
 
-@Composable
-private fun DownloadItem(modifier: Modifier = Modifier, state: DownloadState) {
-	Card(
-		modifier = Modifier.fillMaxWidth().padding(4.dp).then(modifier),
-	) {
-		Row(
-			modifier = Modifier
-				.fillMaxWidth()
-				.height(120.dp)
-				.padding(8.dp),
-			verticalAlignment = Alignment.Top,
+	@Composable
+	private fun DownloadItem(modifier: Modifier = Modifier, state: DownloadState) {
+		Card(
+			modifier = Modifier.fillMaxWidth().padding(4.dp).then(modifier),
 		) {
-			Surface(
-				shape = RoundedCornerShape(4.dp),
+			Row(
 				modifier = Modifier
-					.fillMaxHeight()
-					.aspectRatio(C.COVER_ASPECT_RATIO, true),
+					.fillMaxWidth()
+					.height(120.dp)
+					.padding(8.dp),
+				verticalAlignment = Alignment.Top,
 			) {
-				MangaCover(state.manga)
-			}
-			Spacer(Modifier.width(8.dp))
-			Column(
-				modifier = Modifier.fillMaxWidth(),
-			) {
-				Text(
-					text = state.manga.title,
-					style = MaterialTheme.typography.titleMedium,
-				)
-				AnimatedContent(
-					targetState = state,
-					contentKey = { it.javaClass },
+				Surface(
+					shape = RoundedCornerShape(4.dp),
+					modifier = Modifier
+						.fillMaxHeight()
+						.aspectRatio(C.COVER_ASPECT_RATIO, true),
 				) {
-					when (it) {
-						is DownloadState.Done,
-						is DownloadState.Error,
-						is DownloadState.Cancelled,
-						-> Unit
-
-						is DownloadState.Queued,
-						is DownloadState.Cancelling,
-						is DownloadState.PostProcessing,
-						is DownloadState.Preparing,
-						-> {
-							Spacer(modifier = Modifier.height(8.dp))
-							LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-						}
-
-						is DownloadState.Progress -> {
-							Spacer(modifier = Modifier.height(8.dp))
-							LinearProgressIndicator(
-								modifier = Modifier.fillMaxWidth(),
-								progress = it.percent,
-							)
-						}
-					}
+					MangaCover(state.manga)
 				}
-				Spacer(Modifier.height(8.dp))
-				Text(
-					text = state.getTitle(),
-					style = MaterialTheme.typography.bodyMedium,
-				)
-				Spacer(Modifier.heightIn(min = 4.dp).weight(1f))
-				Row(
+				Spacer(Modifier.width(8.dp))
+				Column(
 					modifier = Modifier.fillMaxWidth(),
-					verticalAlignment = Alignment.CenterVertically,
-					horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.End),
 				) {
-					val dm = LocalDownloadManager.current
-					if (state.isCancellable) {
-						OutlinedButton(
-							onClick = { dm.cancel(state.startId) },
-						) {
-							Text("Cancel")
+					Text(
+						text = state.manga.title,
+						style = MaterialTheme.typography.titleMedium,
+					)
+					AnimatedContent(
+						targetState = state,
+						contentKey = { it.javaClass },
+					) {
+						when (it) {
+							is DownloadState.Done,
+							is DownloadState.Error,
+							is DownloadState.Cancelled,
+							-> Unit
+
+							is DownloadState.Queued,
+							is DownloadState.Cancelling,
+							is DownloadState.PostProcessing,
+							is DownloadState.Preparing,
+							-> {
+								Spacer(modifier = Modifier.height(8.dp))
+								LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+							}
+
+							is DownloadState.Progress -> {
+								Spacer(modifier = Modifier.height(8.dp))
+								LinearProgressIndicator(
+									modifier = Modifier.fillMaxWidth(),
+									progress = it.percent,
+								)
+							}
 						}
 					}
-					if (state is DownloadState.Done && Desktop.isDesktopSupported()) {
-						FilledTonalButton(
-							onClick = {
-								val desktop = Desktop.getDesktop()
-								if (desktop.isSupported(Desktop.Action.BROWSE_FILE_DIR)) {
-									desktop.browseFileDirectory(state.destination)
-								} else if (desktop.isSupported(Desktop.Action.OPEN)) {
-									desktop.open(state.destination)
-								}
-							},
-						) {
-							Text("Open")
+					Spacer(Modifier.height(8.dp))
+					Text(
+						text = state.getTitle(),
+						style = MaterialTheme.typography.bodyMedium,
+					)
+					Spacer(Modifier.heightIn(min = 4.dp).weight(1f))
+					Row(
+						modifier = Modifier.fillMaxWidth(),
+						verticalAlignment = Alignment.CenterVertically,
+						horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.End),
+					) {
+						val dm = LocalDownloadManager.current
+						if (state.isCancellable) {
+							OutlinedButton(
+								onClick = { dm.cancel(state.startId) },
+							) {
+								Text("Cancel")
+							}
+						}
+						if (state is DownloadState.Done && Desktop.isDesktopSupported()) {
+							FilledTonalButton(
+								onClick = {
+									val desktop = Desktop.getDesktop()
+									if (desktop.isSupported(Desktop.Action.BROWSE_FILE_DIR)) {
+										desktop.browseFileDirectory(state.destination)
+									} else if (desktop.isSupported(Desktop.Action.OPEN)) {
+										desktop.open(state.destination)
+									}
+								},
+							) {
+								Text("Open")
+							}
 						}
 					}
 				}
 			}
 		}
 	}
-}
 
-@Preview
-@Composable
-fun DownloadItemPreview() {
-	CompositionLocalProvider(LocalDownloadManager provides DownloadManager(rememberCoroutineScope())) {
-		DownloadItem(
-			modifier = Modifier.width(200.dp),
-			state = DownloadState.Preparing(
-				manga = Manga(
-					id = 3595,
-					title = "Wondering Emanon",
-					altTitle = null,
-					url = "http://www.bing.com/search?q=laoreet",
-					publicUrl = "https://duckduckgo.com/?q=etiam",
-					rating = 0.3f,
-					isNsfw = false,
-					coverUrl = "https://place-hold.it/200x300",
-					tags = setOf(),
-					state = null,
-					author = null,
-					largeCoverUrl = null,
-					description = null,
-					chapters = listOf(),
-					source = MangaSource.DUMMY,
+	@Preview
+	@Composable
+	fun DownloadItemPreview() {
+		CompositionLocalProvider(LocalDownloadManager provides DownloadManager(rememberCoroutineScope())) {
+			DownloadItem(
+				modifier = Modifier.width(200.dp),
+				state = DownloadState.Preparing(
+					manga = Manga(
+						id = 3595,
+						title = "Wondering Emanon",
+						altTitle = null,
+						url = "http://www.bing.com/search?q=laoreet",
+						publicUrl = "https://duckduckgo.com/?q=etiam",
+						rating = 0.3f,
+						isNsfw = false,
+						coverUrl = "https://place-hold.it/200x300",
+						tags = setOf(),
+						state = null,
+						author = null,
+						largeCoverUrl = null,
+						description = null,
+						chapters = listOf(),
+						source = MangaSource.DUMMY,
+					),
+					startId = 4759,
 				),
-				startId = 4759,
-			),
-		)
+			)
+		}
 	}
-}
 
-private val DownloadState.isCancellable: Boolean
-	get() {
-		return this is DownloadState.Preparing || this is DownloadState.Queued || this is DownloadState.Progress
-	}
+	private val DownloadState.isCancellable: Boolean
+		get() {
+			return this is DownloadState.Preparing || this is DownloadState.Queued || this is DownloadState.Progress
+		}
+}

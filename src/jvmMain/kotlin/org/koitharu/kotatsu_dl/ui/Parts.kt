@@ -2,22 +2,21 @@ package org.koitharu.kotatsu_dl.ui
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.HourglassBottom
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import io.kamel.core.utils.cacheControl
 import io.kamel.image.KamelImage
@@ -120,46 +119,48 @@ fun InfiniteGridHandler(
 	}
 }
 
-/*
 @Composable
 fun Spinner(
-	text: String,
-	onValueChanged: (String) -> Unit,
-	label: String,
 	items: List<String>,
+	selectedIndex: Int,
+	onValueChanged: (Int, String) -> Unit,
+	style: TextStyle = LocalTextStyle.current,
 ) {
 	var isOpened by remember { mutableStateOf(false) }
-	Box {
-		Column {
-			OutlinedTextField(
-				value = text,
-				onValueChange = onValueChanged,
-				label = { Text(text = label) },
-				modifier = Modifier.fillMaxWidth()
-			)
-			DropdownMenu(
-				expanded = isOpened,
-				onDismissRequest = { isOpened = false },
+	Column {
+		Surface(
+			shape = RoundedCornerShape(4.dp),
+		) {
+			Row(
+				modifier = Modifier.clickable { isOpened = true }.padding(4.dp),
+				verticalAlignment = Alignment.CenterVertically,
 			) {
-				items.forEach {
-					DropdownMenuItem(
-						text = { Text(it) },
-						modifier = Modifier.fillMaxWidth(),
-						onClick = { onValueChanged(it) }
-					) {
-						Text(it, modifier = Modifier.wrapContentWidth().align(Alignment.Start))
-					}
-				}
+				Text(
+					text = items[selectedIndex],
+					modifier = Modifier.weight(1f),
+					style = style,
+				)
+				Icon(imageVector = Icons.Default.ArrowDropDown, contentDescription = "Dropdown")
 			}
 		}
-		Spacer(
-			modifier = Modifier.matchParentSize().background(Color.Transparent).padding(10.dp)
-				.clickable(
-					onClick = { isOpened = true }
+		DropdownMenu(
+			modifier = Modifier.fillMaxWidth(),
+			expanded = isOpened,
+			onDismissRequest = { isOpened = false },
+		) {
+			items.forEachIndexed { i, s ->
+				DropdownMenuItem(
+					text = { Text(text = s, style = style) },
+					modifier = Modifier.fillMaxWidth(),
+					onClick = {
+						isOpened = false
+						onValueChanged(i, s)
+					},
 				)
-		)
+			}
+		}
 	}
-}*/
+}
 
 @Composable
 fun MangaCover(
