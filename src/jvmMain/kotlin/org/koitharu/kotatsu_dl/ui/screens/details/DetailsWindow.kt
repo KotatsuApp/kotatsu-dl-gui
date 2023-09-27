@@ -1,6 +1,5 @@
 package org.koitharu.kotatsu_dl.ui.screens.details
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,25 +9,21 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.mapToSet
-import org.koitharu.kotatsu_dl.ui.CircularProgressBox
+import org.koitharu.kotatsu_dl.logic.downloader.LocalDownloadManager
+import org.koitharu.kotatsu_dl.ui.MangaCover
 import org.koitharu.kotatsu_dl.ui.screens.Window
 import org.koitharu.kotatsu_dl.ui.screens.WindowManager
 import org.koitharu.kotatsu_dl.util.ParsersFactory
@@ -67,26 +62,7 @@ class DetailsWindow(
 					shape = RoundedCornerShape(4.dp),
 					modifier = Modifier.fillMaxWidth().aspectRatio(13f / 18f),
 				) {
-					KamelImage(
-						resource = asyncPainterResource(manga.largeCoverUrl ?: manga.coverUrl),
-						contentScale = ContentScale.Crop,
-						contentDescription = manga.title,
-						onLoading = { progress ->
-							CircularProgressBox(progress)
-						},
-						onFailure = { e ->
-							Box(
-								modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-								contentAlignment = Alignment.Center,
-							) {
-								Icon(
-									imageVector = Icons.Default.Error,
-									contentDescription = e.message,
-								)
-							}
-						},
-						animationSpec = tween(200),
-					)
+					MangaCover(manga)
 				}
 				if (manga.tags.isNotEmpty()) {
 					Spacer(Modifier.height(12.dp))
@@ -98,7 +74,7 @@ class DetailsWindow(
 						for (tag in manga.tags) {
 							SuggestionChip(
 								onClick = {},
-								label = { Text(tag.title) }
+								label = { Text(tag.title) },
 							)
 						}
 					}
@@ -180,8 +156,17 @@ class DetailsWindow(
 						.padding(8.dp),
 					horizontalArrangement = Arrangement.End,
 				) {
+					val dm = LocalDownloadManager.current
 					Button(
-						onClick = {},
+						onClick = {
+							val chaptersIds = checkedChapters.mapNotNullTo(HashSet()) { (k, v) ->
+								if (v) k.id else null
+							}
+							if (dm.startDownload(window, manga, chaptersIds)) {
+								wm.showDownloadsWindow()
+							}
+						},
+						enabled = checkedChapters.any { it.value },
 					) {
 						Text("Download")
 					}

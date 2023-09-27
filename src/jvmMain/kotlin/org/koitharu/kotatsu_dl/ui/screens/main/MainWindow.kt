@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.ripple.rememberRipple
@@ -31,6 +32,7 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toTitleCase
+import org.koitharu.kotatsu_dl.logic.downloader.LocalDownloadManager
 import org.koitharu.kotatsu_dl.ui.IconProgressBox
 import org.koitharu.kotatsu_dl.ui.NotoEmoji
 import org.koitharu.kotatsu_dl.ui.flagEmoji
@@ -55,6 +57,7 @@ fun MainWindow(
 	Column {
 		Toolbar(
 			modifier = Modifier.background(MaterialTheme.colorScheme.surface).fillMaxWidth(),
+			wm = wm,
 		)
 		Row {
 			var selectedLocale by remember { mutableStateOf(sources.keys.first()) }
@@ -148,11 +151,28 @@ fun MainWindow(
 @Composable
 private fun Toolbar(
 	modifier: Modifier = Modifier,
+	wm: WindowManager,
 ) = Row(
 	modifier = modifier,
-	horizontalArrangement = Arrangement.End,
+	horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.End),
 	verticalAlignment = Alignment.CenterVertically,
 ) {
+	val dm = LocalDownloadManager.current
+	val totalProgress by dm.totalProgress.collectAsState()
+	IconButton(
+		onClick = {
+			wm.showDownloadsWindow()
+		},
+	) {
+		if (totalProgress in 0f..1f) {
+			CircularProgressIndicator(
+				progress = totalProgress,
+				modifier = Modifier.fillMaxSize().padding(4.dp),
+			)
+		} else {
+			Icon(imageVector = Icons.Default.Download, contentDescription = "Downloads")
+		}
+	}
 	IconButton(
 		onClick = {},
 	) {

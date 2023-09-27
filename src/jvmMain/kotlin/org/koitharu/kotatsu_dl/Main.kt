@@ -3,6 +3,7 @@ package org.koitharu.kotatsu_dl
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
@@ -15,6 +16,8 @@ import io.kamel.image.config.resourcesFetcher
 import io.ktor.client.*
 import org.koitharu.kotatsu_dl.data.Config
 import org.koitharu.kotatsu_dl.logic.KotatsuState
+import org.koitharu.kotatsu_dl.logic.downloader.DownloadManager
+import org.koitharu.kotatsu_dl.logic.downloader.LocalDownloadManager
 import org.koitharu.kotatsu_dl.ui.screens.WindowManager
 import org.koitharu.kotatsu_dl.ui.screens.main.FaviconFetcher
 import org.koitharu.kotatsu_dl.ui.screens.main.MainWindow
@@ -35,9 +38,11 @@ fun main() {
 			fetcher(FaviconFetcher(HttpClient()))
 		}
 		val wm = WindowManager()
+		val downloadManager = DownloadManager(rememberCoroutineScope())
 		CompositionLocalProvider(
 			LocalKamelConfig provides kamelConfig,
 			KotatsuStateProvider provides kotatsuState,
+			LocalDownloadManager provides downloadManager,
 		) {
 			MainWindow(
 				state = windowState,

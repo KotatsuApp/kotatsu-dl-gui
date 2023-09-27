@@ -1,6 +1,7 @@
 package org.koitharu.kotatsu_dl.ui
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.HourglassBottom
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -15,8 +17,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import io.kamel.core.utils.cacheControl
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
+import io.ktor.client.request.*
+import io.ktor.client.utils.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.distinctUntilChanged
+import org.koitharu.kotatsu.parsers.model.Manga
 
 @Composable
 fun CircularProgressBox(progress: Float) {
@@ -150,3 +160,37 @@ fun Spinner(
 		)
 	}
 }*/
+
+@Composable
+fun MangaCover(
+	manga: Manga,
+	modifier: Modifier = Modifier,
+) {
+	KamelImage(
+		modifier = modifier,
+		resource = asyncPainterResource(manga.largeCoverUrl?.takeUnless { it.isBlank() } ?: manga.coverUrl) {
+			coroutineContext += Dispatchers.IO
+			requestBuilder { // this: HttpRequestBuilder
+				parameter("source", manga.source)
+				cacheControl(CacheControl.MAX_AGE)
+			}
+		},
+		contentScale = ContentScale.Crop,
+		contentDescription = manga.title,
+		onLoading = { _ ->
+			IconProgressBox()
+		},
+		onFailure = { e ->
+			Box(
+				modifier = Modifier.fillMaxWidth().fillMaxHeight(),
+				contentAlignment = Alignment.Center,
+			) {
+				Icon(
+					imageVector = Icons.Default.Error,
+					contentDescription = e.message,
+				)
+			}
+		},
+		animationSpec = tween(200),
+	)
+}

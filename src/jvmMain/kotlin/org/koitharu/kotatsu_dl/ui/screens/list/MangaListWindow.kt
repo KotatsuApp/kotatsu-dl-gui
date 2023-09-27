@@ -2,7 +2,6 @@
 
 package org.koitharu.kotatsu_dl.ui.screens.list
 
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,14 +17,12 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Sailing
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -33,14 +30,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu_dl.ui.IconProgressBox
 import org.koitharu.kotatsu_dl.ui.InfiniteGridHandler
+import org.koitharu.kotatsu_dl.ui.MangaCover
 import org.koitharu.kotatsu_dl.ui.NotoEmoji
 import org.koitharu.kotatsu_dl.ui.screens.Window
 import org.koitharu.kotatsu_dl.ui.screens.WindowManager
@@ -187,26 +182,7 @@ private fun MangaCard(modifier: Modifier, manga: Manga) = Card(modifier) {
 			modifier = Modifier.fillMaxWidth().aspectRatio(13f / 18f),
 		) {
 			Box {
-				KamelImage(
-					resource = asyncPainterResource(manga.coverUrl),
-					contentScale = ContentScale.Crop,
-					contentDescription = manga.title,
-					onLoading = { _ ->
-						IconProgressBox()
-					},
-					onFailure = { e ->
-						Box(
-							modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-							contentAlignment = Alignment.Center,
-						) {
-							Icon(
-								imageVector = Icons.Default.Error,
-								contentDescription = e.message,
-							)
-						}
-					},
-					animationSpec = tween(200),
-				)
+				MangaCover(manga)
 				if (manga.hasRating) {
 					Surface(
 						shape = RoundedCornerShape(4.dp),
