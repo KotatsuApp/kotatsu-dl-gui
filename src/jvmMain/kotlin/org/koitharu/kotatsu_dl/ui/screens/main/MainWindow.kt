@@ -31,6 +31,7 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu.parsers.util.toTitleCase
+import org.koitharu.kotatsu_dl.ui.IconProgressBox
 import org.koitharu.kotatsu_dl.ui.NotoEmoji
 import org.koitharu.kotatsu_dl.ui.flagEmoji
 import org.koitharu.kotatsu_dl.ui.screens.WindowManager
@@ -107,16 +108,8 @@ fun MainWindow(
 									KamelImage(
 										resource = asyncPainterResource(source),
 										contentDescription = source.title,
-										onLoading = { progress ->
-											Box(
-												modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-												contentAlignment = Alignment.Center,
-											) {
-												CircularProgressIndicator(
-													progress = progress,
-													modifier = Modifier.align(Alignment.Center),
-												)
-											}
+										onLoading = { _ ->
+											IconProgressBox()
 										},
 										onFailure = { e ->
 											Box(

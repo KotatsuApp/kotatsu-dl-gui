@@ -5,6 +5,7 @@ package org.koitharu.kotatsu_dl.ui.screens.list
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -38,6 +39,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
+import org.koitharu.kotatsu_dl.ui.IconProgressBox
+import org.koitharu.kotatsu_dl.ui.InfiniteGridHandler
 import org.koitharu.kotatsu_dl.ui.NotoEmoji
 import org.koitharu.kotatsu_dl.ui.screens.Window
 import org.koitharu.kotatsu_dl.ui.screens.WindowManager
@@ -60,15 +63,15 @@ class MangaListWindow(
 		icon = painterResource("icon4xs.png"),
 		resizable = true,
 	) {
-// 		val kotatsuState = LocalKotatsuState
 		var query by remember { mutableStateOf("") }
 		var submittedQuery by rememberSaveable { mutableStateOf("") }
-		var content by remember { mutableStateOf(emptyList<Manga>()) }
+		val content = remember { mutableStateListOf<Manga>() }
 		var isLoading by remember { mutableStateOf(true) }
 		val listState = rememberLazyGridState()
-		val offset = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+		var offset by remember { mutableStateOf(0) }
 		val doSearch: () -> Unit = {
-			content = emptyList()
+			content.clear()
+			offset = 0
 			submittedQuery = query
 		}
 
@@ -77,7 +80,7 @@ class MangaListWindow(
 			val result = withContext(Dispatchers.Default) {
 				parser.getList(offset, submittedQuery)
 			}
-			content += result
+			content.addAll(result)
 			isLoading = false
 		}
 
@@ -130,8 +133,16 @@ class MangaListWindow(
 							state = listState,
 						) {
 							items(content) { manga ->
-								MangaCard(Modifier.padding(4.dp), manga)
+								MangaCard(
+									Modifier.padding(4.dp).clickable {
+										wm.openDetailsWindow(manga)
+									},
+									manga,
+								)
 							}
+						}
+						InfiniteGridHandler(gridState = listState) {
+							offset = content.size
 						}
 						VerticalScrollbar(
 							modifier = Modifier.fillMaxHeight().align(Alignment.CenterEnd).padding(vertical = 2.dp),
@@ -180,16 +191,8 @@ private fun MangaCard(modifier: Modifier, manga: Manga) = Card(modifier) {
 					resource = asyncPainterResource(manga.coverUrl),
 					contentScale = ContentScale.Crop,
 					contentDescription = manga.title,
-					onLoading = { progress ->
-						Box(
-							modifier = Modifier.fillMaxWidth().fillMaxHeight(),
-							contentAlignment = Alignment.Center,
-						) {
-							CircularProgressIndicator(
-								progress = progress,
-								modifier = Modifier.align(Alignment.Center),
-							)
-						}
+					onLoading = { _ ->
+						IconProgressBox()
 					},
 					onFailure = { e ->
 						Box(
