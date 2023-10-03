@@ -26,6 +26,7 @@ import org.koitharu.kotatsu_dl.C
 import org.koitharu.kotatsu_dl.logic.downloader.DownloadManager
 import org.koitharu.kotatsu_dl.logic.downloader.DownloadState
 import org.koitharu.kotatsu_dl.logic.downloader.LocalDownloadManager
+import org.koitharu.kotatsu_dl.ui.LocalResources
 import org.koitharu.kotatsu_dl.ui.MangaCover
 import org.koitharu.kotatsu_dl.ui.screens.Window
 import org.koitharu.kotatsu_dl.ui.screens.WindowManager
@@ -51,7 +52,7 @@ class DownloadsWindow(
 			val downloads by dm.state.collectAsState()
 			if (downloads.isEmpty()) {
 				Column(
-					modifier = Modifier.align(Alignment.Center),
+					modifier = Modifier.align(Alignment.Center).fillMaxSize(),
 					verticalArrangement = Arrangement.SpaceAround,
 					horizontalAlignment = Alignment.CenterHorizontally,
 				) {
@@ -60,7 +61,7 @@ class DownloadsWindow(
 						contentDescription = null,
 					)
 					Text(
-						text = "Nothing found",
+						text = LocalResources.current.string("no_downloads"),
 					)
 				}
 			} else {

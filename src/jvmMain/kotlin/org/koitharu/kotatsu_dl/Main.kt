@@ -22,8 +22,8 @@ import org.koitharu.kotatsu_dl.ui.LocalResources
 import org.koitharu.kotatsu_dl.ui.Resources
 import org.koitharu.kotatsu_dl.ui.rememberColorScheme
 import org.koitharu.kotatsu_dl.ui.screens.WindowManager
-import org.koitharu.kotatsu_dl.ui.screens.main.FaviconFetcher
-import org.koitharu.kotatsu_dl.ui.screens.main.MainWindow
+import org.koitharu.kotatsu_dl.ui.screens.list.MangaListWindow
+import org.koitharu.kotatsu_dl.ui.screens.list.FaviconFetcher
 
 fun main() {
 	application {
@@ -43,11 +43,11 @@ fun main() {
 				LocalContentColor provides MaterialTheme.colorScheme.onBackground,
 				LocalResources provides remember { Resources() },
 			) {
-				MainWindow(
+				MangaListWindow(
 					state = rememberWindowState(placement = WindowPlacement.Floating),
 					onClose = ::exitApplication,
 					wm = wm,
-				)
+				).invoke()
 				wm()
 			}
 		}

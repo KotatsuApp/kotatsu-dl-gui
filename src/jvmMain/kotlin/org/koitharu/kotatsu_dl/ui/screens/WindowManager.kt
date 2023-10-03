@@ -11,7 +11,6 @@ import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu_dl.ui.screens.details.DetailsWindow
 import org.koitharu.kotatsu_dl.ui.screens.downloads.DownloadsWindow
-import org.koitharu.kotatsu_dl.ui.screens.list.MangaListWindow
 import org.koitharu.kotatsu_dl.ui.screens.settings.SettingsDialog
 
 class WindowManager {
@@ -19,8 +18,8 @@ class WindowManager {
 	private val windowsList = mutableStateListOf<Window>()
 
 	fun openListWindow(source: MangaSource) {
-		val state = WindowState(placement = WindowPlacement.Floating)
-		windowsList.add(MangaListWindow(source, state, this))
+//		val state = WindowState(placement = WindowPlacement.Floating)
+//		windowsList.add(MangaListWindow(source, state, this))
 	}
 
 	fun openDetailsWindow(manga: Manga) {

@@ -13,6 +13,7 @@ import kotlin.io.path.writeText
 @Serializable
 data class Config(
 	val lastSaveDir: String? = null,
+	val lastSource: String? = null,
 	val colorScheme: ColorMode = ColorMode.SYSTEM,
 ) {
 
@@ -33,6 +34,10 @@ data class Config(
 		fun update(newConfig: Config) {
 			newConfig.save()
 			stateFlow.value = newConfig
+		}
+
+		inline fun update(updater: (Config) -> Config) {
+			update(updater(snapshot()))
 		}
 
 		private fun read() = runCatchingCancellable {

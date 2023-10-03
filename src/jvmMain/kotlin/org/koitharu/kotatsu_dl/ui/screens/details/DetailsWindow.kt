@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.WindowState
@@ -151,14 +152,24 @@ class DetailsWindow(
 					) {
 						items(chapters) { chapter ->
 							Row(
+								modifier = Modifier.clickable {
+									checkedChapters[chapter] = checkedChapters[chapter] != true
+								}.padding(
+									horizontal = 8.dp,
+									vertical = 4.dp,
+								).fillMaxWidth(),
 								verticalAlignment = Alignment.CenterVertically,
 							) {
 								Checkbox(
 									checked = checkedChapters[chapter] == true,
-									onCheckedChange = { value -> checkedChapters[chapter] = value },
+									onCheckedChange = null,
 								)
-								Spacer(Modifier.width(4.dp))
-								Text(text = chapter.name)
+								Spacer(Modifier.width(8.dp))
+								Text(
+									text = chapter.name,
+									maxLines = 1,
+									overflow = TextOverflow.Ellipsis,
+								)
 							}
 						}
 					}

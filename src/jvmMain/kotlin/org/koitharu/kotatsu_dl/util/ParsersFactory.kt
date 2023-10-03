@@ -8,6 +8,11 @@ import java.util.*
 
 object ParsersFactory {
 
+	val all: Set<MangaSource> = EnumSet.allOf(MangaSource::class.java).apply {
+		remove(MangaSource.LOCAL)
+		remove(MangaSource.DUMMY)
+	}
+
 	private val cache = EnumMap<MangaSource, SoftReference<MangaParser>>(MangaSource::class.java)
 
 	fun createParser(source: MangaSource): MangaParser {

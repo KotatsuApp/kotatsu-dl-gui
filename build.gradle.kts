@@ -7,7 +7,7 @@ plugins {
 }
 
 group = "org.koitharu"
-version = "1.0.0-c"
+version = "1.0.0-a1"
 
 repositories {
 	google()
@@ -24,17 +24,15 @@ kotlin {
 	sourceSets {
 		val jvmMain by getting {
 			dependencies {
-				implementation(kotlin("reflect"))
 				implementation(compose.desktop.currentOs)
 				implementation(compose.material3)
 				implementation(compose.materialIconsExtended)
-// 				implementation("androidx.emoji2:emoji2-views:1.4.0-beta05")
 				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 				implementation("com.charleskorn.kaml:kaml:0.53.0")
 				implementation("io.ktor:ktor-client-core:2.3.4")
 				implementation("io.ktor:ktor-client-cio:2.3.4")
 				implementation("org.json:json:20220320")
-				implementation("com.github.KotatsuApp:kotatsu-parsers:0004be15ba")
+				implementation("com.github.KotatsuApp:kotatsu-parsers:931f126119")
 				implementation("com.squareup.okhttp3:okhttp:4.11.0")
 				implementation("com.squareup.okio:okio:3.4.0")
 				implementation("io.webfolder:quickjs:1.1.0")

@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu_dl.ui.screens.main
+package org.koitharu.kotatsu_dl.ui.screens.list
 
 import io.kamel.core.DataSource
 import io.kamel.core.Resource
