@@ -34,10 +34,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaSource
-import org.koitharu.kotatsu_dl.ui.InfiniteGridHandler
-import org.koitharu.kotatsu_dl.ui.LocalResources
-import org.koitharu.kotatsu_dl.ui.MangaCover
-import org.koitharu.kotatsu_dl.ui.NotoEmoji
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu_dl.ui.*
 import org.koitharu.kotatsu_dl.ui.screens.Window
 import org.koitharu.kotatsu_dl.ui.screens.WindowManager
 import org.koitharu.kotatsu_dl.util.ParsersFactory
@@ -59,6 +57,7 @@ class MangaListWindow(
 		icon = painterResource("icon4xs.png"),
 		resizable = true,
 	) {
+		var error by rememberErrorHandler()
 		var query by remember { mutableStateOf("") }
 		var submittedQuery by rememberSaveable { mutableStateOf("") }
 		val content = remember { mutableStateListOf<Manga>() }
@@ -73,10 +72,15 @@ class MangaListWindow(
 
 		LaunchedEffect(submittedQuery, offset) {
 			isLoading = true
-			val result = withContext(Dispatchers.Default) {
-				parser.getList(offset, submittedQuery)
+			runCatchingCancellable {
+				withContext(Dispatchers.Default) {
+					parser.getList(offset, submittedQuery)
+				}
+			}.onSuccess {
+				content.addAll(it)
+			}.onFailure {
+				error = it
 			}
-			content.addAll(result)
 			isLoading = false
 		}
 

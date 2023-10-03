@@ -19,12 +19,18 @@ import kotlinx.coroutines.withContext
 import org.koitharu.kotatsu.parsers.model.Manga
 import org.koitharu.kotatsu.parsers.model.MangaChapter
 import org.koitharu.kotatsu.parsers.util.mapToSet
+import org.koitharu.kotatsu.parsers.util.runCatchingCancellable
+import org.koitharu.kotatsu_dl.C
 import org.koitharu.kotatsu_dl.logic.downloader.LocalDownloadManager
 import org.koitharu.kotatsu_dl.ui.LocalResources
 import org.koitharu.kotatsu_dl.ui.MangaCover
+import org.koitharu.kotatsu_dl.ui.rememberErrorHandler
 import org.koitharu.kotatsu_dl.ui.screens.Window
 import org.koitharu.kotatsu_dl.ui.screens.WindowManager
 import org.koitharu.kotatsu_dl.util.ParsersFactory
+import java.awt.Desktop
+import java.net.URI
+import java.util.*
 
 class DetailsWindow(
 	private val state: WindowState,
@@ -41,68 +47,83 @@ class DetailsWindow(
 		icon = painterResource("icon4xs.png"),
 		resizable = true,
 	) {
+		var error by rememberErrorHandler()
 		var manga by remember { mutableStateOf(initialManga) }
 		LaunchedEffect(initialManga) {
-			manga = withContext(Dispatchers.Default) {
-				ParsersFactory.createParser(initialManga.source).getDetails(initialManga)
+			runCatchingCancellable {
+				withContext(Dispatchers.Default) {
+					ParsersFactory.createParser(initialManga.source).getDetails(initialManga)
+				}
+			}.onSuccess {
+				manga = it
+			}.onFailure {
+				error = it
 			}
 		}
-
 		Row(
-			modifier = Modifier.background(MaterialTheme.colorScheme.background)
+			modifier = Modifier.background(MaterialTheme.colorScheme.background),
 		) {
-			Column(
-				modifier = Modifier
-					.widthIn(min = 200.dp, max = 600.dp)
-					.padding(8.dp)
-					.fillMaxWidth(0.4f)
-					.verticalScroll(rememberScrollState()),
-			) {
-				Surface(
-					shape = RoundedCornerShape(4.dp),
-					modifier = Modifier.fillMaxWidth().aspectRatio(13f / 18f),
+			Box {
+				val scrollState = rememberScrollState()
+				Column(
+					modifier = Modifier
+						.widthIn(min = 200.dp, max = 600.dp)
+						.padding(8.dp)
+						.fillMaxWidth(0.4f)
+						.verticalScroll(scrollState),
 				) {
-					MangaCover(manga)
-				}
-				if (manga.tags.isNotEmpty()) {
-					Spacer(Modifier.height(12.dp))
-					FlowRow(
-						horizontalArrangement = Arrangement.spacedBy(4.dp),
-						verticalArrangement = Arrangement.spacedBy(4.dp),
-						modifier = Modifier.fillMaxWidth(),
+					Surface(
+						shape = RoundedCornerShape(4.dp),
+						modifier = Modifier.fillMaxWidth().aspectRatio(C.COVER_ASPECT_RATIO),
 					) {
-						for (tag in manga.tags) {
-							SuggestionChip(
-								onClick = {},
-								label = { Text(tag.title) },
-							)
+						MangaCover(manga)
+					}
+					if (manga.tags.isNotEmpty()) {
+						Spacer(Modifier.height(12.dp))
+						FlowRow(
+							horizontalArrangement = Arrangement.spacedBy(4.dp),
+							modifier = Modifier.fillMaxWidth(),
+						) {
+							for (tag in manga.tags) {
+								SuggestionChip(
+									onClick = {},
+									label = { Text(tag.title) },
+								)
+							}
 						}
 					}
+					if (!manga.description.isNullOrBlank()) {
+						Spacer(Modifier.height(12.dp))
+						Text(manga.description.orEmpty())
+					}
 				}
-				if (!manga.description.isNullOrBlank()) {
-					Spacer(Modifier.height(12.dp))
-					Text(manga.description.orEmpty())
-				}
-			}
-			Column(
-				modifier = Modifier.fillMaxWidth(),
-			) {
-				Text(
-					text = manga.title,
-					style = MaterialTheme.typography.titleMedium,
+				VerticalScrollbar(
+					modifier = Modifier.fillMaxHeight().align(Alignment.CenterEnd),
+					adapter = rememberScrollbarAdapter(scrollState),
 				)
-				manga.altTitle?.let { altTitle ->
-					Spacer(Modifier.height(4.dp))
-					Text(
-						text = altTitle,
-						style = MaterialTheme.typography.titleSmall,
-					)
-				}
-				Spacer(Modifier.height(12.dp))
+			}
+			Box(
+				modifier = Modifier
+					.fillMaxHeight()
+					.width(1.dp)
+					.background(color = MaterialTheme.colorScheme.outlineVariant),
+			)
+			Column(
+				modifier = Modifier
+					.widthIn(min = 400.dp)
+					.fillMaxWidth(),
+			) {
 				val branches = remember(manga.chapters.orEmpty()) {
 					manga.chapters.orEmpty().mapToSet { it.branch }
 				}
-				var branch by remember(branches) { mutableStateOf(branches.firstOrNull()) }
+				var branch by remember(branches) {
+					val localeName = Locale.getDefault().getDisplayLanguage(Locale.getDefault())
+					mutableStateOf(
+						branches.find { x ->
+							x?.contains(localeName, ignoreCase = true) == true
+						} ?: branches.firstOrNull(),
+					)
+				}
 				val checkedChapters = remember(branch) {
 					mutableStateMapOf<MangaChapter, Boolean>()
 				}
@@ -121,9 +142,9 @@ class DetailsWindow(
 						}
 					}
 				}
+				val chapters = remember(manga.chapters, branch) { manga.getChapters(branch).orEmpty() }
 				Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
 					val listState = rememberLazyListState()
-					val chapters = remember(manga.chapters, branch) { manga.getChapters(branch).orEmpty() }
 					LazyColumn(
 						modifier = Modifier.padding(4.dp),
 						state = listState,
@@ -142,7 +163,7 @@ class DetailsWindow(
 						}
 					}
 					VerticalScrollbar(
-						modifier = Modifier.fillMaxHeight().align(Alignment.CenterEnd).padding(vertical = 2.dp),
+						modifier = Modifier.fillMaxHeight().align(Alignment.CenterEnd),
 						adapter = rememberScrollbarAdapter(listState),
 					)
 				}
@@ -154,9 +175,28 @@ class DetailsWindow(
 					modifier = Modifier
 						.fillMaxWidth()
 						.padding(8.dp),
-					horizontalArrangement = Arrangement.End,
+					horizontalArrangement = Arrangement.spacedBy(8.dp),
+					verticalAlignment = Alignment.CenterVertically,
 				) {
 					val dm = LocalDownloadManager.current
+					if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+						FilledTonalButton(
+							onClick = {
+								Desktop.getDesktop().browse(URI(manga.publicUrl))
+							},
+						) {
+							Text(LocalResources.current.string("read"))
+						}
+					}
+					Spacer(Modifier.weight(1f))
+					FilledTonalButton(
+						onClick = {
+							checkedChapters.clear()
+							chapters.associateWithTo(checkedChapters) { true }
+						},
+					) {
+						Text(LocalResources.current.string("select_all"))
+					}
 					Button(
 						onClick = {
 							val chaptersIds = checkedChapters.mapNotNullTo(HashSet()) { (k, v) ->
