@@ -8,7 +8,6 @@ import androidx.compose.ui.window.DialogState
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.window.WindowState
 import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaSource
 import org.koitharu.kotatsu_dl.ui.screens.details.DetailsWindow
 import org.koitharu.kotatsu_dl.ui.screens.downloads.DownloadsWindow
 import org.koitharu.kotatsu_dl.ui.screens.settings.SettingsDialog
@@ -16,11 +15,6 @@ import org.koitharu.kotatsu_dl.ui.screens.settings.SettingsDialog
 class WindowManager {
 
 	private val windowsList = mutableStateListOf<Window>()
-
-	fun openListWindow(source: MangaSource) {
-//		val state = WindowState(placement = WindowPlacement.Floating)
-//		windowsList.add(MangaListWindow(source, state, this))
-	}
 
 	fun openDetailsWindow(manga: Manga) {
 		val state = WindowState(placement = WindowPlacement.Floating)
