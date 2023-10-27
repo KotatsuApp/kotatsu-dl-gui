@@ -7,7 +7,6 @@ plugins {
 }
 
 group = "org.koitharu"
-version = "1.0.0-a1"
 
 repositories {
 	google()
@@ -32,7 +31,7 @@ kotlin {
 				implementation("io.ktor:ktor-client-core:2.3.4")
 				implementation("io.ktor:ktor-client-cio:2.3.4")
 				implementation("org.json:json:20220320")
-				implementation("com.github.KotatsuApp:kotatsu-parsers:400a90464e")
+				implementation("com.github.KotatsuApp:kotatsu-parsers:6258476a58")
 				implementation("com.squareup.okhttp3:okhttp:4.11.0")
 				implementation("com.squareup.okio:okio:3.4.0")
 				implementation("io.webfolder:quickjs:1.1.0")
@@ -46,11 +45,16 @@ kotlin {
 
 compose.desktop {
 	application {
-		mainClass = "MainKt"
+		mainClass = "org.koitharu.kotatsu_dl.MainKt"
 		nativeDistributions {
-			targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
+			targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Exe, TargetFormat.AppImage)
 			packageName = "kotatsu-dl"
 			packageVersion = "1.0.0"
+		}
+		buildTypes.release {
+			proguard {
+				configurationFiles.from("proguard-rules.pro")
+			}
 		}
 	}
 }
