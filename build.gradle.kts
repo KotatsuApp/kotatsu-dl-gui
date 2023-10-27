@@ -47,7 +47,7 @@ compose.desktop {
 	application {
 		mainClass = "org.koitharu.kotatsu_dl.MainKt"
 		nativeDistributions {
-			targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Exe, TargetFormat.AppImage)
+			targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Exe, TargetFormat.AppImage, TargetFormat.Rpm, TargetFormat.Deb)
 			packageName = "kotatsu-dl"
 			packageVersion = "1.0.0"
 			modules("java.instrument", "jdk.unsupported")
