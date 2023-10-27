@@ -50,6 +50,16 @@ compose.desktop {
 			targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Exe, TargetFormat.AppImage)
 			packageName = "kotatsu-dl"
 			packageVersion = "1.0.0"
+			macOS {
+				// macOS specific options
+			}
+			windows {
+				perUserInstall = true
+			}
+			linux {
+				menuGroup = "Network"
+				iconFile.set(project.file("src/jvmMain/resources/icon_large.png"))
+			}
 		}
 		buildTypes.release {
 			proguard {
