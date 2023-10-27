@@ -50,15 +50,21 @@ compose.desktop {
 			targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Exe, TargetFormat.AppImage)
 			packageName = "kotatsu-dl"
 			packageVersion = "1.0.0"
+			modules("java.instrument", "jdk.unsupported")
+			val iconsRoot = project.file("packaging/icons")
 			macOS {
-				// macOS specific options
+				iconFile.set(iconsRoot.resolve("icon.icns"))
 			}
 			windows {
+				menu = true
+				menuGroup = "kotatsu-dl"
+				shortcut = true
 				perUserInstall = true
+				iconFile.set(iconsRoot.resolve("icon.ico"))
 			}
 			linux {
 				menuGroup = "Network"
-				iconFile.set(project.file("src/jvmMain/resources/icon_large.png"))
+				iconFile.set(iconsRoot.resolve("icon.png"))
 			}
 		}
 		buildTypes.release {
