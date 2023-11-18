@@ -27,15 +27,15 @@ kotlin {
 				implementation(compose.material3)
 				implementation(compose.materialIconsExtended)
 				implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
-				implementation("com.charleskorn.kaml:kaml:0.53.0")
-				implementation("io.ktor:ktor-client-core:2.3.4")
-				implementation("io.ktor:ktor-client-cio:2.3.4")
+				implementation("com.charleskorn.kaml:kaml:0.55.0")
+				implementation("io.ktor:ktor-client-core:2.3.6")
+				implementation("io.ktor:ktor-client-cio:2.3.6")
 				implementation("org.json:json:20220320")
-				implementation("com.github.KotatsuApp:kotatsu-parsers:6258476a58")
-				implementation("com.squareup.okhttp3:okhttp:4.11.0")
+				implementation("com.github.KotatsuApp:kotatsu-parsers:41eea1c420")
+				implementation("com.squareup.okhttp3:okhttp:4.12.0")
 				implementation("com.squareup.okio:okio:3.4.0")
 				implementation("io.webfolder:quickjs:1.1.0")
-				implementation("media.kamel:kamel-image:0.7.3")
+				implementation("media.kamel:kamel-image:0.8.3")
 				implementation("com.github.Koitharu:jSystemThemeDetector:9a3824cf4b")
 			}
 		}
@@ -49,7 +49,7 @@ compose.desktop {
 		nativeDistributions {
 			targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Exe, TargetFormat.AppImage, TargetFormat.Rpm, TargetFormat.Deb)
 			packageName = "kotatsu-dl"
-			packageVersion = "1.0.0"
+			packageVersion = "1.0.1"
 			modules("java.instrument", "jdk.unsupported")
 			val iconsRoot = project.file("packaging/icons")
 			macOS {
