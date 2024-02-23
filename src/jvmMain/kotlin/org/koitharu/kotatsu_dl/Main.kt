@@ -15,6 +15,7 @@ import io.kamel.image.config.LocalKamelConfig
 import io.kamel.image.config.batikSvgDecoder
 import io.kamel.image.config.resourcesFetcher
 import io.ktor.client.*
+import org.koitharu.kotatsu_dl.data.Directories
 import org.koitharu.kotatsu_dl.logic.downloader.DownloadManager
 import org.koitharu.kotatsu_dl.logic.downloader.LocalDownloadManager
 import org.koitharu.kotatsu_dl.ui.KotatsuTypography
@@ -26,6 +27,7 @@ import org.koitharu.kotatsu_dl.ui.screens.list.MangaListWindow
 import org.koitharu.kotatsu_dl.ui.screens.list.FaviconFetcher
 
 fun main() {
+	Directories.createDirs()
 	application {
 		val kamelConfig = KamelConfig {
 			takeFrom(KamelConfig.Default)
@@ -51,5 +53,6 @@ fun main() {
 				wm()
 			}
 		}
+
 	}
 }

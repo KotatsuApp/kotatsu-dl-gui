@@ -3,7 +3,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
 	kotlin("multiplatform")
 	kotlin("plugin.serialization")
-	id("org.jetbrains.compose")
+	id("org.jetbrains.compose") version "1.5.12"
 }
 
 group = "org.koitharu"
