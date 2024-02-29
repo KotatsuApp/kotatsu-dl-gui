@@ -2,11 +2,12 @@ package org.koitharu.kotatsu_dl.data
 
 import org.koitharu.kotatsu_dl.util.OS
 import kotlin.io.path.Path
-import kotlin.io.path.createDirectories
 import kotlin.io.path.div
+import kotlin.io.path.exists
+import kotlin.io.path.createFile
+import kotlin.io.path.createDirectories
 
 object Directories {
-
 	val home = Path(System.getProperty("user.home"))
 
 	val config = when (OS.current) {
@@ -26,6 +27,14 @@ object Directories {
 	val configFile = config / "kotatsu-dl-config.yml"
 
 	fun createDirs() {
-		config.createDirectories()
+		if (config.exists()) {
+			if (!configFile.exists()) {
+				configFile.createFile()
+			} else {
+				println("The config file has been created.")
+			}
+		} else {
+			config.createDirectories()
+		}
 	}
 }
