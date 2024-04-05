@@ -45,6 +45,7 @@ class DownloadTask(
 			val coverUrl = data.largeCoverUrl ?: data.coverUrl
 			downloadFile(coverUrl, data.source).let { file ->
 				output.addCover(file, getFileExtensionFromUrl(coverUrl))
+
 			}
 			val chapters = if (chaptersIds == null) {
 				data.chapters.orEmpty()
@@ -65,6 +66,7 @@ class DownloadTask(
 									pageIndex,
 									getFileExtensionFromUrl(url),
 								)
+								getFileExtensionFromUrl(url)
 							} catch (e: IOException) {
 								continue@failsafe
 							}
@@ -132,7 +134,7 @@ class DownloadTask(
 	}
 
 	private fun getFileExtensionFromUrl(url: String): String {
-		return url.substringAfterLast('.', "")
+		return url.substringAfterLast('.', "").take(3)
 	}
 
 	private companion object {
