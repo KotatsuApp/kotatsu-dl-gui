@@ -134,7 +134,7 @@ class DownloadTask(
 	}
 
 	private fun getFileExtensionFromUrl(url: String): String {
-		return url.substringAfterLast('.', "").take(3)
+		return url.substringBeforeLast('?').substringAfterLast('.', "")
 	}
 
 	private companion object {
