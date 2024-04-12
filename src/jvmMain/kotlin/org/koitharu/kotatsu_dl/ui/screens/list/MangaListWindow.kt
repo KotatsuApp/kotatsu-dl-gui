@@ -202,7 +202,7 @@ class MangaListWindow(
 			content.isNotEmpty() -> {
 				LazyVerticalGrid(
 					modifier = Modifier.padding(horizontal = 6.dp),
-					columns = GridCells.Adaptive(minSize = 98.dp),
+					columns = GridCells.Adaptive(minSize = 142.dp),
 					state = listState,
 				) {
 					items(content) { manga ->

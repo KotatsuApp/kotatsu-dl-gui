@@ -4,9 +4,7 @@ import androidx.compose.runtime.compositionLocalOf
 import java.util.*
 
 class Resources {
-
 	private val bundle = ResourceBundle.getBundle("messages")
-
 	fun string(name: String): String = bundle.getString(name)
 }
 
