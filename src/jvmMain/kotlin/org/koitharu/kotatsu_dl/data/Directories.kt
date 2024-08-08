@@ -27,14 +27,16 @@ object Directories {
 	val configFile = config / "kotatsu-dl-config.yml"
 
 	fun createDirs() {
-		if (config.exists()) {
-			if (!configFile.exists()) {
-				configFile.createFile()
-			} else {
-				println("The config file has been created.")
-			}
-		} else {
+		// Create the directory if it does not exist
+		if (!config.exists()) {
 			config.createDirectories()
+		}
+
+		// Create the configuration file if it does not exist
+		if (!configFile.exists()) {
+			configFile.createFile()
+		} else {
+			println("The config file has already been created.")
 		}
 	}
 }
